@@ -1201,29 +1201,37 @@
                 titre: "Trigonométrie",
                 utilite: [
                     "Calculer des longueurs dans un triangle rectangle",
-                    "Calculer des angles dans un triangle rectangle",
-                    "Résoudre des problèmes de géométrie avec le cosinus, sinus et tangente"
+                    "Calculer des angles dans un triangle rectangle"
+                    
                 ],
                 videos: [
                     {
-                        titre: "I) À quoi cela sert ?",
-                        url: ""
+                        titre: "I) Cours : À quoi cela sert ?",
+                        url: "https://tube-sciences-technologies.apps.education.fr/videos/embed/tRNaK9dDHfpscUZdL79TGi"
                     },
                     {
-                        titre: "II) Vocabulaire du triangle rectangle",
-                        url: ""
+                        titre: "II) Cours : Vocabulaire du triangle rectangle",
+                        url: "https://tube-sciences-technologies.apps.education.fr/videos/embed/3UEYuvLB3oQL83qHFhc19D"
                     },
                     {
-                        titre: "III) Cosinus",
-                        url: ""
+                        titre: "III) Cours : Cosinus",
+                        url: "https://tube-sciences-technologies.apps.education.fr/videos/embed/dGD5rGhiGGx9S1gMifCz6q"
                     },
                     {
-                        titre: "IV) Sinus",
-                        url: ""
+                        titre: "IV) Cours : Sinus et Tangente",
+                        url: "https://tube-sciences-technologies.apps.education.fr/videos/embed/8eonjeKEM7Lcy9Ep4Spxqc"
                     },
                     {
-                        titre: "V) Tangente",
-                        url: ""
+                        titre: "V) Exercice : Trouver la bonne relation trigonométrique",
+                        url: "https://tube-sciences-technologies.apps.education.fr/videos/embed/efHF2DRhoDLHpKZbsWX3vh"
+                    },
+                    {
+                        titre: "VI) Exercice : Calculer la mesure d'un angle",
+                        url: "https://tube-sciences-technologies.apps.education.fr/videos/embed/qCoXqWra2JaDdAziXQSbE1"
+                    },
+                    {
+                        titre: "VII) Exercice : Calcul d'une longueur",
+                        url: "https://tube-sciences-technologies.apps.education.fr/videos/embed/njatATNo5m6uwDsscN4L7e"
                     }
                 ]
             }
@@ -1534,12 +1542,7 @@
                         ✨ Nouveautés
                     </h2>
                     <ul style="line-height: 2; color: #78350f;">
-                        <li><strong>Algorithmique :</strong> Le cours Python a été amélioré ! Maintenant plus progressif avec 5 niveaux, des exemples détaillés et des corrections complètes <span style="color: #92400e; font-size: 0.9em;">(17/11/2025)</span></li>
-                        <li><strong>Nouvelle section Jeux :</strong> Découvre des jeux mathématiques pour apprendre en t'amusant ! Euclidea et Pythagorea (Géométrie), Mathador (Calcul), Blockly Games (Algorithmie) <span style="color: #92400e; font-size: 0.9em;">(16/11/2025)</span></li>
-                        <li><strong>Espace élève :</strong> Ajout de GeoGebra et Scratch dans les Liens Utiles <span style="color: #92400e; font-size: 0.9em;">(16/11/2025)</span></li>
-                        <li><strong>Algèbre :</strong> Ajout d'une section Fractions (Addition, Soustraction, Multiplication, Division) <span style="color: #92400e; font-size: 0.9em;">(10/11/2025)</span></li>
-                        <li><strong>Algorithmique :</strong> Ajout de la leçon Python avec exercices interactifs <span style="color: #92400e; font-size: 0.9em;">(10/11/2025)</span></li>
-                        <li><strong>Algorithmique :</strong> Nouveaux exercices Scratch (Suite d'avancés, Commandes de tracé, Variables, Algorithmes) <span style="color: #92400e; font-size: 0.9em;">(10/11/2025)</span></li>
+                        <li><strong>Géométrie :</strong> Nouveau cours complet sur la Trigonométrie ! (Cosinus, Sinus, Tangente) <span style="color: #92400e; font-size: 0.9em;">(25/11/2024)</span></li>
                     </ul>
                 </div>
 
@@ -1636,7 +1639,7 @@
                     // Enlever les I) II) a) etc des titres
                     const cleanTitle = video.titre.replace(/^[IVX]+\)\s*[a-z]\)\s*/i, '').replace(/^[IVX]+\)\s*/i, '');
 
-                    // Définir l'exercice correspondant selon l'index (uniquement pour Pythagore)
+                    // Définir l'exercice correspondant selon l'index
                     let exerciceIframe = '';
                     if (lecon.id === 'geometrie-pythagore') {
                         if (index === 1) { // Calcul de la longueur de l'hypoténuse
@@ -1661,6 +1664,56 @@
                                     <h3 style="color: #047857; margin-bottom: 15px;">✏️ Exercice</h3>
                                     <div style="width: 100%; height: 600px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
                                         <iframe src="https://coopmaths.fr/alea/?uuid=ab5d4&id=4G21&n=1&d=10&s=2&s2=false&i=1&cd=1&v=eleve&es=2011001&title=D%C3%A9montrer+que+ce+triangle+n%27est+pas+rectangle" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                </div>`;
+                        }
+                    } else if (lecon.id === 'geometrie-trigonometrie') {
+                        if (index === 1) { // Vocabulaire du triangle rectangle
+                            exerciceIframe = `
+                                <div style="margin-top: 30px;">
+                                    <h3 style="color: #047857; margin-bottom: 15px;">✏️ Exercice</h3>
+                                    <div style="width: 100%; height: 600px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                        <iframe src="https://mathsmentales.net/wall.html?a=,fs=serif,t=&p=0~t=Diapo%201~c=1~o=true~d=normal~at=10_i=4GB3~o=~q=~p=~t=8~n=9" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                </div>`;
+                        } else if (index === 2) { // Cosinus
+                            exerciceIframe = `
+                                <div style="margin-top: 30px;">
+                                    <h3 style="color: #047857; margin-bottom: 15px;">✏️ Exercice</h3>
+                                    <div style="width: 100%; height: 600px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                        <iframe src="https://coopmaths.fr/alea/?uuid=0d1f7&id=3G30-1&n=1&d=10&s=1&s2=1&cd=1&v=eleve&es=2111001&title=Exercices+cosinus" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                </div>`;
+                        } else if (index === 3) { // Sinus et Tangente
+                            exerciceIframe = `
+                                <div style="margin-top: 30px;">
+                                    <h3 style="color: #047857; margin-bottom: 15px;">✏️ Exercice</h3>
+                                    <div style="width: 100%; height: 600px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                        <iframe src="https://coopmaths.fr/alea/?uuid=0d1f7&id=3G30-1&n=1&d=10&s=2&s2=4&cd=1&v=eleve&es=2111001" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                </div>`;
+                        } else if (index === 4) { // Exercices - Trouver la bonne relation trigonométrique
+                            exerciceIframe = `
+                                <div style="margin-top: 30px;">
+                                    <h3 style="color: #047857; margin-bottom: 15px;">✏️ Exercice : Trouver la bonne relation trigonométrique</h3>
+                                    <div style="width: 100%; height: 600px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                        <iframe src="https://mathsmentales.net/wall.html?a=,fs=serif,t=&p=0~t=Diapo%201~c=1~o=true~d=normal~at=10_i=4GB5~o=~q=~p=~t=8~n=6" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                </div>`;
+                        } else if (index === 5) { // Calcul d'un angle
+                            exerciceIframe = `
+                                <div style="margin-top: 30px;">
+                                    <h3 style="color: #047857; margin-bottom: 15px;">✏️ Exercice : Calcul d'un angle</h3>
+                                    <div style="width: 100%; height: 600px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                        <iframe src="https://coopmaths.fr/alea/?uuid=0ac11&id=3G31&n=1&d=10&s=true&cd=1&v=eleve&es=2111001" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
+                                    </div>
+                                </div>`;
+                        } else if (index === 6) { // Calcul d'une longueur
+                            exerciceIframe = `
+                                <div style="margin-top: 30px;">
+                                    <h3 style="color: #047857; margin-bottom: 15px;">✏️ Exercice : Calcul d'une longueur</h3>
+                                    <div style="width: 100%; height: 600px; border-radius: 12px; overflow: hidden; box-shadow: 0 4px 15px rgba(0,0,0,0.1);">
+                                        <iframe src="https://coopmaths.fr/alea/?uuid=bd6b1&id=3G30&n=1&d=10&s=true&s2=7&s3=2&i=1&cd=1&v=eleve&es=2111001" width="100%" height="100%" frameborder="0" allowfullscreen></iframe>
                                     </div>
                                 </div>`;
                         }
