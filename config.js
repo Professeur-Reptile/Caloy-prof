@@ -19,6 +19,15 @@ const CONFIG = {
     emailProf: "",
     messageContact: "Pose ta question en classe, ou envoie-moi un message sur l'ENT / Pronote. Je réponds vite ! 📬",
 
+    // Écran de nuit : le site est BLOQUÉ entre debutHeure et finHeure
+    // (un écran « c'est l'heure de dormir » recouvre tout). Mettez
+    // texte: "" pour désactiver le blocage.
+    nuit: {
+        debutHeure: 21,  // bloqué à partir de 21 h…
+        finHeure: 6,     // …jusqu'à 6 h du matin
+        texte: "Les défis seront encore là demain — ton cerveau retient mieux les maths après une bonne nuit. 😴"
+    },
+
     // ---- Vos classes ----------------------------------------------
     // Renommez librement (ex : "4e Picasso"). L'ordre est celui des
     // boutons. Chaque classe a SON contenu, à son rythme.

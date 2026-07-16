@@ -529,6 +529,27 @@ function renderChooseOverlay() {
     }).join('');
 }
 
+// ---- Écran de nuit : le site est bloqué aux heures de dodo ----
+function renderNuit() {
+    const overlay = document.getElementById('dodo-overlay');
+    const nuit = CONFIG.nuit;
+    if (!nuit || !nuit.texte) { overlay.classList.add('hidden'); return; }
+
+    const h = new Date().getHours();
+    const debut = nuit.debutHeure, fin = nuit.finHeure;
+    // La plage passe par minuit (ex : 21 h → 6 h)
+    const bloque = debut > fin ? (h >= debut || h < fin) : (h >= debut && h < fin);
+
+    if (bloque) {
+        document.getElementById('dodo-texte').textContent = nuit.texte;
+        document.getElementById('dodo-retour').textContent =
+            'Le site rouvre à ' + fin + ' h. Bonne nuit ! 🌟';
+        overlay.classList.remove('hidden');
+    } else {
+        overlay.classList.add('hidden');
+    }
+}
+
 // ---- Compteur de visites (discret, masqué si indisponible) ----
 async function compteurVisites() {
     try {
@@ -571,4 +592,8 @@ window.addEventListener('DOMContentLoaded', function() {
     render();
     chargerTotaux();
     compteurVisites();
+    renderNuit();
+    // Re-vérifie chaque minute : l'écran de nuit tombe (ou se lève)
+    // même si l'onglet reste ouvert
+    setInterval(renderNuit, 60000);
 });
