@@ -191,40 +191,150 @@ function renderComportement(classe) {
 }
 
 // ---- Défi de la semaine ----
-function defisReussis() {
+// États possibles d'un défi (localStorage 'mc-defis') :
+//   "reussi"        → validé après avoir vu l'indice
+//   "reussi-bonus"  → validé sans indice (XP bonus)
+//   "vu"            → réponse révélée, plus d'XP possible
+// (true = ancien format, traité comme "reussi")
+const DEFI_ESSAIS = {}; // compteur d'essais ratés (mémoire de session)
+
+function etatsDefis() {
     try { return JSON.parse(localStorage.getItem('mc-defis')) || {}; } catch (e) { return {}; }
+}
+
+function etatDefi(id) {
+    const brut = etatsDefis()[id];
+    return brut === true ? 'reussi' : brut;
+}
+
+function setEtatDefi(id, etat) {
+    const m = etatsDefis();
+    m[id] = etat;
+    localStorage.setItem('mc-defis', JSON.stringify(m));
+}
+
+function indicesVus() {
+    try { return JSON.parse(localStorage.getItem('mc-indices')) || {}; } catch (e) { return {}; }
+}
+
+// Ignore majuscules, espaces et remplace la virgule par un point,
+// pour accepter « 2 M », « 2m », « 2,0 m »…
+function normaliser(txt) {
+    return String(txt).toLowerCase().replace(/,/g, '.').replace(/\s+/g, '');
 }
 
 function renderDefi(classe) {
     const zone = document.getElementById('defi');
     const defi = classe.defi;
+    const tag = document.getElementById('defi-xp-tag');
+    if (tag) {
+        tag.textContent = '+' + CONFIG.xp.defi + ' XP' +
+            (CONFIG.xp.defiSansIndice ? ' (+' + CONFIG.xp.defiSansIndice + ' sans indice)' : '');
+    }
     if (!defi || !defi.question) {
         zone.innerHTML = '<p class="empty-msg">Nouveau défi bientôt… 👀</p>';
         return;
     }
-    const dejaReussi = defisReussis()[defi.id];
-    zone.innerHTML =
-        '<div class="defi-question">' + defi.question + '</div>' +
-        '<div class="defi-actions">' +
-            '<button class="btn ghost" onclick="document.getElementById(\'defi-indice\').classList.add(\'visible\')">💡 Indice</button>' +
-            '<button class="btn ghost" onclick="document.getElementById(\'defi-reponse\').classList.add(\'visible\')">👀 Voir la réponse</button>' +
-            '<button class="btn success" id="defi-gagne" onclick="reussirDefi(\'' + defi.id + '\')"' + (dejaReussi ? ' disabled' : '') + '>' +
-                (dejaReussi ? '✅ Défi validé !' : '✅ J\'ai trouvé !') +
-            '</button>' +
-        '</div>' +
-        '<div class="defi-indice" id="defi-indice">💡 ' + (defi.indice || '') + '</div>' +
-        '<div class="defi-reponse" id="defi-reponse">' + (defi.reponse || '') + '</div>';
+
+    const etat = etatDefi(defi.id);
+    let html = '<div class="defi-question">' + defi.question + '</div>';
+
+    if (etat === 'reussi' || etat === 'reussi-bonus') {
+        html += '<div class="defi-reponse visible">' + (defi.reponse || '') + '</div>' +
+            '<p class="defi-statut ok">✅ Défi validé' +
+            (etat === 'reussi-bonus' ? ' sans indice — bravo ! 🌟' : ' !') + '</p>';
+    } else if (etat === 'vu') {
+        html += '<div class="defi-reponse visible">' + (defi.reponse || '') + '</div>' +
+            '<p class="defi-statut">👀 Réponse révélée — pas d\'XP cette fois. Le prochain défi est pour toi !</p>';
+    } else if (defi.bonnesReponses && defi.bonnesReponses.length > 0) {
+        html +=
+            '<div class="defi-saisie">' +
+                '<input type="text" id="defi-input" placeholder="Ta réponse…" autocomplete="off"' +
+                    ' onkeydown="if (event.key === \'Enter\') validerDefi(\'' + defi.id + '\')">' +
+                '<button class="btn success" onclick="validerDefi(\'' + defi.id + '\')">Valider</button>' +
+            '</div>' +
+            '<p class="defi-feedback" id="defi-feedback"></p>' +
+            '<div class="defi-actions">' +
+                '<button class="btn ghost" onclick="montrerIndice(\'' + defi.id + '\')">💡 Indice</button>' +
+                '<button class="btn ghost" id="defi-reveler" onclick="revelerReponse(\'' + defi.id + '\')">👀 Voir la réponse</button>' +
+            '</div>' +
+            '<div class="defi-indice" id="defi-indice">💡 ' + (defi.indice || '') + '</div>';
+    } else {
+        // Pas de bonnesReponses dans la config : simple bouton déclaratif
+        html +=
+            '<div class="defi-actions">' +
+                '<button class="btn ghost" onclick="montrerIndice(\'' + defi.id + '\')">💡 Indice</button>' +
+                '<button class="btn ghost" onclick="document.getElementById(\'defi-reponse\').classList.add(\'visible\')">👀 Voir la réponse</button>' +
+                '<button class="btn success" onclick="reussiSansVerif(\'' + defi.id + '\')">✅ J\'ai trouvé !</button>' +
+            '</div>' +
+            '<div class="defi-indice" id="defi-indice">💡 ' + (defi.indice || '') + '</div>' +
+            '<div class="defi-reponse" id="defi-reponse">' + (defi.reponse || '') + '</div>';
+    }
+
+    zone.innerHTML = html;
+    if (indicesVus()[defi.id]) {
+        const el = document.getElementById('defi-indice');
+        if (el) el.classList.add('visible');
+    }
 }
 
-function reussirDefi(defiId) {
-    const reussis = defisReussis();
-    if (reussis[defiId]) return;
-    reussis[defiId] = true;
-    localStorage.setItem('mc-defis', JSON.stringify(reussis));
+function validerDefi(id) {
+    const classe = CONFIG.classes[getClasse()];
+    const defi = classe.defi;
+    const input = document.getElementById('defi-input');
+    const feedback = document.getElementById('defi-feedback');
+    const essai = normaliser(input.value);
+
+    if (!essai) {
+        feedback.textContent = 'Écris ta réponse d\'abord ! ✍️';
+        return;
+    }
+
+    const correct = defi.bonnesReponses.some(function(r) { return normaliser(r) === essai; });
+
+    if (correct) {
+        const sansIndice = !indicesVus()[id];
+        setEtatDefi(id, sansIndice ? 'reussi-bonus' : 'reussi');
+        addXP(CONFIG.xp.defi + (sansIndice ? (CONFIG.xp.defiSansIndice || 0) : 0));
+        renderDefi(classe);
+    } else {
+        DEFI_ESSAIS[id] = (DEFI_ESSAIS[id] || 0) + 1;
+        input.classList.remove('shake');
+        void input.offsetWidth; // relance l'animation
+        input.classList.add('shake');
+        feedback.textContent = DEFI_ESSAIS[id] >= 2
+            ? 'Toujours pas… Un petit coup d\'œil à l\'indice ? 💡'
+            : 'Pas encore, essaie autre chose ! 🔍';
+    }
+}
+
+function montrerIndice(id) {
+    const m = indicesVus();
+    if (!m[id]) {
+        m[id] = true;
+        localStorage.setItem('mc-indices', JSON.stringify(m));
+    }
+    const el = document.getElementById('defi-indice');
+    if (el) el.classList.add('visible');
+}
+
+function revelerReponse(id) {
+    const btn = document.getElementById('defi-reveler');
+    // Premier clic : on prévient que ça coûte les XP. Deuxième : on révèle.
+    if (btn && !btn.dataset.confirme) {
+        btn.dataset.confirme = '1';
+        btn.textContent = '⚠️ Sûr·e ? (0 XP)';
+        return;
+    }
+    setEtatDefi(id, 'vu');
+    renderDefi(CONFIG.classes[getClasse()]);
+}
+
+function reussiSansVerif(id) {
+    if (etatDefi(id)) return;
+    setEtatDefi(id, 'reussi');
     addXP(CONFIG.xp.defi);
-    const btn = document.getElementById('defi-gagne');
-    btn.disabled = true;
-    btn.textContent = '✅ Défi validé !';
+    renderDefi(CONFIG.classes[getClasse()]);
 }
 
 // ---- Boîte à outils ----

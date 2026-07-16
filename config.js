@@ -34,8 +34,15 @@ const CONFIG = {
     //                     niveau de 0 (vide 🚨) à 100 (pleine 🤩),
     //                     message optionnel ("" pour ne rien afficher),
     //                     mettez niveau: null pour masquer la carte
-    //   • defi          : le défi de la semaine (id UNIQUE à changer à
-    //                     chaque nouveau défi, sinon pas de nouveaux XP !)
+    //   • defi          : le défi de la semaine
+    //       - id : UNIQUE, à changer à chaque nouveau défi (sinon pas
+    //         de nouveaux XP !)
+    //       - bonnesReponses : les réponses acceptées (majuscules,
+    //         espaces et virgules/points sont ignorés à la correction ;
+    //         listez plusieurs formes : ["100", "100cm", "1m"]).
+    //         Si la liste est absente, le défi repasse en simple
+    //         bouton « J'ai trouvé » sans vérification.
+    //       - reponse : l'explication affichée après la réussite
 
     classes: {
 
@@ -66,6 +73,7 @@ const CONFIG = {
                 id: "4A-2026-s38",
                 question: "Un écran de télé mesure 80 cm de large et 60 cm de haut. Quelle est la longueur de sa diagonale ?",
                 indice: "La diagonale coupe l'écran en deux triangles rectangles… Pythagore peut t'aider !",
+                bonnesReponses: ["100", "100cm", "1m"],
                 reponse: "<strong>100 cm</strong> — d'après Pythagore : d² = 80² + 60² = 6400 + 3600 = 10000, donc d = 100. C'est comme ça qu'on mesure les écrans (en pouces) ! 📺"
             }
         },
@@ -94,6 +102,7 @@ const CONFIG = {
                 id: "4B-2026-s38",
                 question: "Je pense à un nombre. Je le double, j'ajoute 5, et j'obtiens 17. Écris le calcul « à l'envers » et trouve mon nombre.",
                 indice: "Pars de 17 : enlève 5, puis partage en deux…",
+                bonnesReponses: ["6"],
                 reponse: "<strong>6</strong> — (17 − 5) ÷ 2 = 6. En langage calcul littéral : 2x + 5 = 17. Tu viens de résoudre une équation sans le savoir ! 💪"
             }
         },
@@ -123,6 +132,7 @@ const CONFIG = {
                 id: "4C-2026-s38",
                 question: "Un écran de télé mesure 80 cm de large et 60 cm de haut. Quelle est la longueur de sa diagonale ?",
                 indice: "La diagonale coupe l'écran en deux triangles rectangles… Pythagore peut t'aider !",
+                bonnesReponses: ["100", "100cm", "1m"],
                 reponse: "<strong>100 cm</strong> — d'après Pythagore : d² = 80² + 60² = 6400 + 3600 = 10000, donc d = 100. C'est comme ça qu'on mesure les écrans (en pouces) ! 📺"
             }
         },
@@ -153,6 +163,7 @@ const CONFIG = {
                 id: "3A-2026-s38",
                 question: "Un skateur descend une rampe de 4 m qui fait un angle de 30° avec le sol. De quelle hauteur part-il ?",
                 indice: "Fais un schéma : la rampe est l'hypoténuse, la hauteur est le côté opposé à l'angle… sin ou cos ?",
+                bonnesReponses: ["2", "2m", "200cm"],
                 reponse: "<strong>2 m</strong> — sin(30°) = hauteur ÷ 4, donc hauteur = 4 × sin(30°) = 4 × 0,5 = 2. 🛹"
             }
         },
@@ -182,6 +193,7 @@ const CONFIG = {
                 id: "3B-2026-s38",
                 question: "Pour mesurer la hauteur d'un arbre, Léa plante un bâton d'1 m qui fait une ombre de 60 cm. Au même moment, l'ombre de l'arbre mesure 4,20 m. Quelle est la hauteur de l'arbre ?",
                 indice: "Les rayons du soleil sont parallèles… deux triangles, une même proportion : c'est Thalès !",
+                bonnesReponses: ["7", "7m", "700cm"],
                 reponse: "<strong>7 m</strong> — hauteur ÷ 4,20 = 1 ÷ 0,60, donc hauteur = 4,20 ÷ 0,60 = 7. La méthode de Thalès lui-même pour mesurer les pyramides ! 🌳"
             }
         }
@@ -208,7 +220,8 @@ const CONFIG = {
 
     // XP gagnés par action
     xp: {
-        defi: 15,       // réussir le défi de la semaine
-        fidelite: 5     // revenir un jour de plus d'affilée
+        defi: 15,           // réussir le défi de la semaine
+        defiSansIndice: 5,  // bonus si réussi sans avoir ouvert l'indice
+        fidelite: 5         // revenir un jour de plus d'affilée
     }
 };
