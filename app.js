@@ -161,33 +161,37 @@ function renderCountdown(classe) {
         '<div class="what"><strong>' + (ev.titre || 'Évaluation') + '</strong><br>le ' + dateTxt + '</div>';
 }
 
-// ---- Batterie de comportement ----
+// ---- Feu tricolore du comportement ----
+const FEU_ETATS = {
+    vert:   { emoji: '😄', label: 'Feu vert — tout roule !' },
+    orange: { emoji: '😬', label: 'Feu orange — on se ressaisit !' },
+    rouge:  { emoji: '🚨', label: 'Feu rouge — stop, on se reprend.' }
+};
+
 function renderComportement(classe) {
     const carte = document.getElementById('comportement-card');
     const compo = classe.comportement;
-    if (!compo || compo.niveau === null || compo.niveau === undefined) {
+    const couleur = compo && String(compo.couleur || '').toLowerCase();
+    if (!FEU_ETATS[couleur]) {
         carte.classList.add('hidden');
         return;
     }
     carte.classList.remove('hidden');
 
-    const niveau = Math.max(0, Math.min(100, compo.niveau));
-    let etat, emoji;
-    if (niveau >= 90)      { etat = 'pleine';  emoji = '🤩'; }
-    else if (niveau >= 70) { etat = 'haute';   emoji = '😄'; }
-    else if (niveau >= 50) { etat = 'moyenne'; emoji = '🙂'; }
-    else if (niveau >= 30) { etat = 'basse';   emoji = '😬'; }
-    else                   { etat = 'vide';    emoji = '🚨'; }
-
-    document.getElementById('batterie-zone').innerHTML =
-        '<div class="batterie-ligne">' +
-            '<div class="batterie ' + etat + '">' +
-                '<div class="batterie-corps"><div class="batterie-niveau" style="width:' + niveau + '%"></div></div>' +
-                '<div class="batterie-tete"></div>' +
+    const etat = FEU_ETATS[couleur];
+    document.getElementById('feu-zone').innerHTML =
+        '<div class="feu-ligne">' +
+            '<div class="feu ' + couleur + '">' +
+                '<div class="feu-lampe rouge"></div>' +
+                '<div class="feu-lampe orange"></div>' +
+                '<div class="feu-lampe verte"></div>' +
             '</div>' +
-            '<div class="batterie-pct">' + emoji + ' ' + niveau + '%</div>' +
+            '<div class="feu-info">' +
+                '<div class="feu-emoji">' + etat.emoji + '</div>' +
+                '<div class="feu-label">' + etat.label + '</div>' +
+            '</div>' +
         '</div>' +
-        (compo.message ? '<p class="batterie-msg">💬 ' + compo.message + '</p>' : '');
+        (compo.message ? '<p class="feu-msg">💬 ' + compo.message + '</p>' : '');
 }
 
 // ---- Défi de la semaine ----
