@@ -551,6 +551,14 @@ body {
 
 .defi-statut.ok { color: var(--green); }
 
+/* Ligne « course aux points » : qui marquera pour la classe ? */
+.defi-course {
+    color: var(--text-dim);
+    font-weight: 600;
+    font-size: 0.9em;
+    margin-bottom: 10px;
+}
+
 /* Boîte à outils */
 .shortcuts {
     display: grid;

@@ -15,21 +15,19 @@ function setClasse(code) {
     render();
 }
 
-// ---- XP, niveaux et série de jours ----
-// L'XP est compté PAR CLASSE : chaque classe a son propre compteur,
-// résoudre le défi d'une autre classe ne rapporte rien à la sienne.
-function xpKey() {
-    return 'mc-xp:' + localStorage.getItem('mc-classe');
-}
+// ---- XP de la classe ----
+// L'XP est le score COLLECTIF de la classe, stocké sur le serveur
+// (defis.php) : chaque défi ne rapporte des points qu'une fois par
+// classe, au premier élève qui trouve. Le navigateur garde une copie
+// des totaux pour l'affichage hors ligne.
+let TOTAUX = {};   // XP par classe (source : serveur)
+let MARQUES = {};  // défis déjà marqués, par classe (source : serveur)
 
 function getXP() {
-    return parseInt(localStorage.getItem(xpKey()) || '0', 10);
+    return TOTAUX[getClasse()] || 0;
 }
 
-function addXP(montant) {
-    if (!getClasse()) return;
-    localStorage.setItem(xpKey(), String(getXP() + montant));
-    renderXP();
+function popXP(montant) {
     const zone = document.getElementById('xp-pop-zone');
     zone.innerHTML = '<span class="xp-pop">+' + montant + ' XP ✨</span>';
     setTimeout(function() { zone.innerHTML = ''; }, 1500);
@@ -59,6 +57,22 @@ function renderXP() {
     }
 }
 
+async function chargerTotaux() {
+    try { TOTAUX = JSON.parse(localStorage.getItem('mc-totaux')) || {}; } catch (e) {}
+    renderXP();
+    try {
+        const rep = await fetch('defis.php');
+        const data = await rep.json();
+        TOTAUX = data.totaux || {};
+        MARQUES = data.marques || {};
+        localStorage.setItem('mc-totaux', JSON.stringify(TOTAUX));
+        renderXP();
+        const code = getClasse();
+        if (code) renderDefis(CONFIG.classes[code]);
+    } catch (e) { /* pas de PHP en local : on garde la copie locale */ }
+}
+
+// ---- Série de jours (petite fierté personnelle, sans XP) ----
 function updateStreak() {
     const today = new Date();
     const todayKey = today.toDateString();
@@ -67,12 +81,7 @@ function updateStreak() {
     try { data = JSON.parse(localStorage.getItem('mc-streak')) || data; } catch (e) {}
 
     if (data.last !== todayKey) {
-        if (data.last === yesterdayKey) {
-            data.count += 1;
-            addXP(CONFIG.xp.fidelite);
-        } else {
-            data.count = 1;
-        }
+        data.count = (data.last === yesterdayKey) ? data.count + 1 : 1;
         data.last = todayKey;
         localStorage.setItem('mc-streak', JSON.stringify(data));
     }
@@ -201,12 +210,16 @@ function renderComportement(classe) {
         (compo.message ? '<p class="feu-msg">💬 ' + compo.message + '</p>' : '');
 }
 
-// ---- Défi de la semaine ----
+// ---- Défis du jour et de la semaine ----
+// Les défis sont définis PAR NIVEAU (4e / 3e) dans CONFIG.defis, avec
+// une date de début : le site choisit automatiquement le défi du jour
+// et celui de la semaine en cours. Le premier élève de la classe qui
+// trouve fait marquer les points à sa classe (une seule fois par défi).
+//
 // États possibles d'un défi (localStorage 'mc-defis') :
 //   "reussi"        → validé après avoir vu l'indice
 //   "reussi-bonus"  → validé sans indice (XP bonus)
-//   "vu"            → réponse révélée, plus d'XP possible
-// (true = ancien format, traité comme "reussi")
+//   "vu"            → réponse révélée, plus de points possibles
 const DEFI_ESSAIS = {}; // compteur d'essais ratés (mémoire de session)
 
 function etatsDefis() {
@@ -214,8 +227,7 @@ function etatsDefis() {
 }
 
 function etatDefi(id) {
-    const brut = etatsDefis()[id];
-    return brut === true ? 'reussi' : brut;
+    return etatsDefis()[id];
 }
 
 function setEtatDefi(id, etat) {
@@ -229,71 +241,111 @@ function indicesVus() {
 }
 
 // Ignore majuscules, espaces et remplace la virgule par un point,
-// pour accepter « 2 M », « 2m », « 2,0 m »…
+// pour accepter « 2 M », « 2m », « 1,5 »…
 function normaliser(txt) {
     return String(txt).toLowerCase().replace(/,/g, '.').replace(/\s+/g, '');
 }
 
-function renderDefi(classe) {
-    const zone = document.getElementById('defi');
-    const defi = classe.defi;
-    const tag = document.getElementById('defi-xp-tag');
-    if (tag) {
-        tag.textContent = '+' + CONFIG.xp.defi + ' XP' +
-            (CONFIG.xp.defiSansIndice ? ' (+' + CONFIG.xp.defiSansIndice + ' sans indice)' : '');
+function aujourdhuiISO() {
+    const d = new Date();
+    return d.getFullYear() + '-' +
+        String(d.getMonth() + 1).padStart(2, '0') + '-' +
+        String(d.getDate()).padStart(2, '0');
+}
+
+// Le défi affiché = celui dont la date de début est la plus récente
+// parmi celles déjà passées (le vendredi reste affiché le week-end).
+function defiActuel(liste) {
+    if (!liste) return null;
+    const ajd = aujourdhuiISO();
+    let choisi = null;
+    for (const d of liste) {
+        if (d.debut && d.debut <= ajd && (!choisi || d.debut > choisi.debut)) choisi = d;
     }
+    return choisi;
+}
+
+function defiDe(type, classe) {
+    const groupe = CONFIG.defis && CONFIG.defis[classe.niveau];
+    if (!groupe) return null;
+    return defiActuel(type === 'jour' ? groupe.jour : groupe.semaine);
+}
+
+function defiId(type, niveau, defi) {
+    return type + ':' + niveau + ':' + defi.debut;
+}
+
+function pointsDefi(type, sansIndice) {
+    const base = type === 'jour' ? CONFIG.xp.defiJour : CONFIG.xp.defiSemaine;
+    const bonus = type === 'jour' ? CONFIG.xp.defiJourSansIndice : CONFIG.xp.defiSemaineSansIndice;
+    return base + (sansIndice ? (bonus || 0) : 0);
+}
+
+function renderDefis(classe) {
+    renderDefiCarte('jour', classe);
+    renderDefiCarte('semaine', classe);
+}
+
+function renderDefiCarte(type, classe) {
+    const carte = document.getElementById('defi-' + type + '-card');
+    const zone = document.getElementById('defi-' + type);
+    const defi = defiDe(type, classe);
+
     if (!defi || !defi.question) {
-        zone.innerHTML = '<p class="empty-msg">Nouveau défi bientôt… 👀</p>';
+        carte.classList.add('hidden');
         return;
     }
+    carte.classList.remove('hidden');
 
-    const etat = etatDefi(defi.id);
+    const base = type === 'jour' ? CONFIG.xp.defiJour : CONFIG.xp.defiSemaine;
+    const bonus = type === 'jour' ? CONFIG.xp.defiJourSansIndice : CONFIG.xp.defiSemaineSansIndice;
+    const tag = document.getElementById('defi-' + type + '-xp-tag');
+    if (tag) tag.textContent = '+' + base + ' XP' + (bonus ? ' (+' + bonus + ' sans indice)' : '');
+
+    const id = defiId(type, classe.niveau, defi);
+    const etat = etatDefi(id);
+    const marque = (MARQUES[getClasse()] || []).indexOf(id) !== -1;
+
     let html = '<div class="defi-question">' + defi.question + '</div>';
 
     if (etat === 'reussi' || etat === 'reussi-bonus') {
         html += '<div class="defi-reponse visible">' + (defi.reponse || '') + '</div>' +
-            '<p class="defi-statut ok">✅ Défi validé' +
+            '<p class="defi-statut ok" id="defi-statut-' + type + '">✅ Défi validé' +
             (etat === 'reussi-bonus' ? ' sans indice — bravo ! 🌟' : ' !') + '</p>';
     } else if (etat === 'vu') {
         html += '<div class="defi-reponse visible">' + (defi.reponse || '') + '</div>' +
-            '<p class="defi-statut">👀 Réponse révélée — pas d\'XP cette fois. Le prochain défi est pour toi !</p>';
-    } else if (defi.bonnesReponses && defi.bonnesReponses.length > 0) {
+            '<p class="defi-statut">👀 Réponse révélée — pas de points cette fois. Le prochain défi est pour toi !</p>';
+    } else {
+        html += marque
+            ? '<p class="defi-course">🏁 Ta classe a déjà marqué ces points — mais entraîne-toi quand même !</p>'
+            : '<p class="defi-course">⚡ Personne n\'a encore marqué pour ta classe : sois le premier !</p>';
         html +=
             '<div class="defi-saisie">' +
-                '<input type="text" id="defi-input" placeholder="Ta réponse…" autocomplete="off"' +
-                    ' onkeydown="if (event.key === \'Enter\') validerDefi(\'' + defi.id + '\')">' +
-                '<button class="btn success" onclick="validerDefi(\'' + defi.id + '\')">Valider</button>' +
+                '<input type="text" id="defi-input-' + type + '" placeholder="Ta réponse…" autocomplete="off"' +
+                    ' onkeydown="if (event.key === \'Enter\') validerDefi(\'' + type + '\')">' +
+                '<button class="btn success" onclick="validerDefi(\'' + type + '\')">Valider</button>' +
             '</div>' +
-            '<p class="defi-feedback" id="defi-feedback"></p>' +
+            '<p class="defi-feedback" id="defi-feedback-' + type + '"></p>' +
             '<div class="defi-actions">' +
-                '<button class="btn ghost" onclick="montrerIndice(\'' + defi.id + '\')">💡 Indice</button>' +
-                '<button class="btn ghost" id="defi-reveler" onclick="revelerReponse(\'' + defi.id + '\')">👀 Voir la réponse</button>' +
+                '<button class="btn ghost" onclick="montrerIndice(\'' + type + '\')">💡 Indice</button>' +
+                '<button class="btn ghost" id="defi-reveler-' + type + '" onclick="revelerReponse(\'' + type + '\')">👀 Voir la réponse</button>' +
             '</div>' +
-            '<div class="defi-indice" id="defi-indice">💡 ' + (defi.indice || '') + '</div>';
-    } else {
-        // Pas de bonnesReponses dans la config : simple bouton déclaratif
-        html +=
-            '<div class="defi-actions">' +
-                '<button class="btn ghost" onclick="montrerIndice(\'' + defi.id + '\')">💡 Indice</button>' +
-                '<button class="btn ghost" onclick="document.getElementById(\'defi-reponse\').classList.add(\'visible\')">👀 Voir la réponse</button>' +
-                '<button class="btn success" onclick="reussiSansVerif(\'' + defi.id + '\')">✅ J\'ai trouvé !</button>' +
-            '</div>' +
-            '<div class="defi-indice" id="defi-indice">💡 ' + (defi.indice || '') + '</div>' +
-            '<div class="defi-reponse" id="defi-reponse">' + (defi.reponse || '') + '</div>';
+            '<div class="defi-indice" id="defi-indice-' + type + '">💡 ' + (defi.indice || '') + '</div>';
     }
 
     zone.innerHTML = html;
-    if (indicesVus()[defi.id]) {
-        const el = document.getElementById('defi-indice');
+    if (indicesVus()[id]) {
+        const el = document.getElementById('defi-indice-' + type);
         if (el) el.classList.add('visible');
     }
 }
 
-function validerDefi(id) {
-    const classe = CONFIG.classes[getClasse()];
-    const defi = classe.defi;
-    const input = document.getElementById('defi-input');
-    const feedback = document.getElementById('defi-feedback');
+function validerDefi(type) {
+    const code = getClasse();
+    const classe = CONFIG.classes[code];
+    const defi = defiDe(type, classe);
+    const input = document.getElementById('defi-input-' + type);
+    const feedback = document.getElementById('defi-feedback-' + type);
     const essai = normaliser(input.value);
 
     if (!essai) {
@@ -301,13 +353,14 @@ function validerDefi(id) {
         return;
     }
 
-    const correct = defi.bonnesReponses.some(function(r) { return normaliser(r) === essai; });
+    const correct = (defi.bonnesReponses || []).some(function(r) { return normaliser(r) === essai; });
+    const id = defiId(type, classe.niveau, defi);
 
     if (correct) {
         const sansIndice = !indicesVus()[id];
         setEtatDefi(id, sansIndice ? 'reussi-bonus' : 'reussi');
-        addXP(CONFIG.xp.defi + (sansIndice ? (CONFIG.xp.defiSansIndice || 0) : 0));
-        renderDefi(classe);
+        renderDefiCarte(type, classe);
+        marquerPourLaClasse(code, id, pointsDefi(type, sansIndice), type);
     } else {
         DEFI_ESSAIS[id] = (DEFI_ESSAIS[id] || 0) + 1;
         input.classList.remove('shake');
@@ -319,33 +372,58 @@ function validerDefi(id) {
     }
 }
 
-function montrerIndice(id) {
+// Envoie la réussite au serveur : points comptés seulement si personne
+// de la classe n'avait déjà marqué ce défi.
+async function marquerPourLaClasse(code, id, points, type) {
+    const statut = document.getElementById('defi-statut-' + type);
+    try {
+        const rep = await fetch('defis.php', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ classe: code, defi: id, points: points })
+        });
+        const data = await rep.json();
+        MARQUES[code] = MARQUES[code] || [];
+        if (MARQUES[code].indexOf(id) === -1) MARQUES[code].push(id);
+        if (data.deja) {
+            if (statut) statut.textContent += ' Quelqu\'un de ta classe avait déjà marqué les points. 🏁';
+        } else {
+            TOTAUX[code] = data.total;
+            localStorage.setItem('mc-totaux', JSON.stringify(TOTAUX));
+            renderXP();
+            popXP(data.points);
+            if (statut) statut.textContent += ' Tu marques +' + data.points + ' XP pour ta classe ! 🎉';
+        }
+    } catch (e) {
+        if (statut) statut.textContent += ' (serveur injoignable : points non comptés)';
+    }
+}
+
+function montrerIndice(type) {
+    const classe = CONFIG.classes[getClasse()];
+    const defi = defiDe(type, classe);
+    const id = defiId(type, classe.niveau, defi);
     const m = indicesVus();
     if (!m[id]) {
         m[id] = true;
         localStorage.setItem('mc-indices', JSON.stringify(m));
     }
-    const el = document.getElementById('defi-indice');
+    const el = document.getElementById('defi-indice-' + type);
     if (el) el.classList.add('visible');
 }
 
-function revelerReponse(id) {
-    const btn = document.getElementById('defi-reveler');
-    // Premier clic : on prévient que ça coûte les XP. Deuxième : on révèle.
+function revelerReponse(type) {
+    const btn = document.getElementById('defi-reveler-' + type);
+    // Premier clic : on prévient que ça coûte les points. Deuxième : on révèle.
     if (btn && !btn.dataset.confirme) {
         btn.dataset.confirme = '1';
         btn.textContent = '⚠️ Sûr·e ? (0 XP)';
         return;
     }
-    setEtatDefi(id, 'vu');
-    renderDefi(CONFIG.classes[getClasse()]);
-}
-
-function reussiSansVerif(id) {
-    if (etatDefi(id)) return;
-    setEtatDefi(id, 'reussi');
-    addXP(CONFIG.xp.defi);
-    renderDefi(CONFIG.classes[getClasse()]);
+    const classe = CONFIG.classes[getClasse()];
+    const defi = defiDe(type, classe);
+    setEtatDefi(defiId(type, classe.niveau, defi), 'vu');
+    renderDefiCarte(type, classe);
 }
 
 // ---- Boîte à outils ----
@@ -432,21 +510,16 @@ function render() {
     renderAnnonces(classe);
     renderDevoirs(classe);
     renderCountdown(classe);
-    renderDefi(classe);
+    renderDefis(classe);
 }
 
 window.addEventListener('DOMContentLoaded', function() {
-    // Migration : l'XP était global ('mc-xp') avant d'être compté par classe
-    const ancienXP = localStorage.getItem('mc-xp');
-    if (ancienXP !== null) {
-        if (getClasse()) localStorage.setItem(xpKey(), ancienXP);
-        localStorage.removeItem('mc-xp');
-    }
     document.title = CONFIG.titreSite + ' 🚀';
     renderContact();
     renderOutils();
     renderXP();
     updateStreak();
     render();
+    chargerTotaux();
     compteurVisites();
 });
