@@ -264,15 +264,17 @@ body {
 
 .batterie {
     display: flex;
+    flex-direction: column;
     align-items: center;
-    flex: 1;
-    min-width: 200px;
-    max-width: 420px;
+    width: 72px;
+    height: 150px;
 }
 
 .batterie-corps {
     flex: 1;
-    height: 38px;
+    width: 100%;
+    display: flex;
+    align-items: flex-end;
     border: 3px solid rgba(255, 255, 255, 0.35);
     border-radius: 10px;
     padding: 4px;
@@ -280,34 +282,34 @@ body {
 }
 
 .batterie-tete {
-    width: 7px;
-    height: 16px;
+    width: 28px;
+    height: 8px;
     background: rgba(255, 255, 255, 0.35);
-    border-radius: 0 4px 4px 0;
-    margin-left: 3px;
+    border-radius: 4px 4px 0 0;
+    margin-bottom: 3px;
 }
 
 .batterie-niveau {
-    height: 100%;
+    width: 100%;
     border-radius: 5px;
-    transition: width 0.8s ease;
+    transition: height 0.8s ease;
 }
 
 .batterie.pleine .batterie-niveau,
 .batterie.haute .batterie-niveau {
-    background: linear-gradient(90deg, #059669, var(--green));
+    background: linear-gradient(0deg, #059669, var(--green));
 }
 
 .batterie.moyenne .batterie-niveau {
-    background: linear-gradient(90deg, #d97706, var(--yellow));
+    background: linear-gradient(0deg, #d97706, var(--yellow));
 }
 
 .batterie.basse .batterie-niveau {
-    background: linear-gradient(90deg, #ea580c, #f97316);
+    background: linear-gradient(0deg, #ea580c, #f97316);
 }
 
 .batterie.vide .batterie-niveau {
-    background: linear-gradient(90deg, #dc2626, var(--pink));
+    background: linear-gradient(0deg, #dc2626, var(--pink));
     animation: clignote 1.2s ease-in-out infinite;
 }
 

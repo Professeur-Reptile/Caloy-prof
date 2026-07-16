@@ -182,8 +182,8 @@ function renderComportement(classe) {
     document.getElementById('batterie-zone').innerHTML =
         '<div class="batterie-ligne">' +
             '<div class="batterie ' + etat + '">' +
-                '<div class="batterie-corps"><div class="batterie-niveau" style="width:' + niveau + '%"></div></div>' +
                 '<div class="batterie-tete"></div>' +
+                '<div class="batterie-corps"><div class="batterie-niveau" style="height:' + niveau + '%"></div></div>' +
             '</div>' +
             '<div class="batterie-pct">' + emoji + ' ' + niveau + '%</div>' +
         '</div>' +
