@@ -22,6 +22,7 @@ function setClasse(code) {
 // des totaux pour l'affichage hors ligne.
 let TOTAUX = {};   // XP par classe (source : serveur)
 let MARQUES = {};  // défis déjà marqués, par classe (source : serveur)
+let DATE_SERVEUR = ''; // date officielle "AAAA-MM-JJ" donnée par le serveur
 
 function getXP() {
     return TOTAUX[getClasse()] || 0;
@@ -65,6 +66,7 @@ async function chargerTotaux() {
         const data = await rep.json();
         TOTAUX = data.totaux || {};
         MARQUES = data.marques || {};
+        if (data.date) DATE_SERVEUR = data.date;
         localStorage.setItem('mc-totaux', JSON.stringify(TOTAUX));
         renderXP();
         const code = getClasse();
@@ -259,9 +261,15 @@ function dateISO(d) {
         String(d.getDate()).padStart(2, '0');
 }
 
+// La date de référence : celle du serveur (la même pour tout le monde,
+// insensible aux horloges mal réglées) ; à défaut, celle de l'appareil.
+function dateReference() {
+    return DATE_SERVEUR ? new Date(DATE_SERVEUR + 'T12:00:00') : new Date();
+}
+
 // Le week-end, on garde le défi du vendredi
 function dernierJourOuvre() {
-    const d = new Date();
+    const d = dateReference();
     if (d.getDay() === 6) d.setDate(d.getDate() - 1);      // samedi → vendredi
     else if (d.getDay() === 0) d.setDate(d.getDate() - 2); // dimanche → vendredi
     return d;
@@ -308,7 +316,7 @@ function defiPour(type, code) {
     const pool = pools.semaine || [];
     if (!pool.length) return null;
     const debut = new Date(CONFIG.defisDebut + 'T00:00:00');
-    const ajd = new Date();
+    const ajd = dateReference();
     if (dateISO(ajd) < CONFIG.defisDebut) return null;
     const w = Math.floor((ajd - debut) / (7 * 86400000));
     const k = (i + w) % pool.length;
