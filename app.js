@@ -211,13 +211,15 @@ function renderComportement(classe) {
 }
 
 // ---- Défis du jour et de la semaine ----
-// Deux pools de défis partagés par toutes les classes (CONFIG.defisJour
-// et CONFIG.defisSemaine), mais DÉCALÉS par une rotation : jamais deux
-// classes sur le même défi en même temps.
-//   • défi du jour  : la classe n° i reçoit le jour ouvré n° j le défi
-//                     (i + j) % 10 — le week-end garde celui du vendredi
-//   • défi semaine  : la classe n° i reçoit la semaine n° w le défi
-//                     (i + w) % 5 — permutation chaque lundi
+// Un pool de défis PAR NIVEAU (CONFIG.defis["4e"] et ["3e"], chacun
+// avec ses listes jour/semaine), avec une rotation à l'intérieur du
+// niveau : jamais deux classes du même niveau sur le même défi en
+// même temps.
+//   • défi du jour  : la classe n° i du niveau reçoit le jour ouvré
+//                     n° j le défi (i + j) % taille du pool — le
+//                     week-end garde celui du vendredi
+//   • défi semaine  : la classe n° i du niveau reçoit la semaine n° w
+//                     le défi (i + w) % taille — permutation le lundi
 // Le premier élève de la classe qui trouve fait marquer les points à sa
 // classe (une seule fois par défi, géré par defis.php).
 //
@@ -277,32 +279,42 @@ function joursOuvresDepuis(debutISO, d) {
     return n;
 }
 
-function indexClasse(code) {
-    return Object.keys(CONFIG.classes).indexOf(code);
+// Position de la classe parmi celles de SON niveau (la rotation se
+// fait entre classes du même niveau)
+function indexClasseDansNiveau(code) {
+    const niveau = CONFIG.classes[code].niveau;
+    return Object.keys(CONFIG.classes)
+        .filter(function(c) { return CONFIG.classes[c].niveau === niveau; })
+        .indexOf(code);
 }
 
 // Retourne { defi, id } pour la classe, ou null si pas de défi
 function defiPour(type, code) {
-    if (!CONFIG.defisDebut) return null;
+    if (!CONFIG.defisDebut || !CONFIG.defis) return null;
+    const niveau = CONFIG.classes[code].niveau;
+    const pools = CONFIG.defis[niveau];
+    if (!pools) return null;
+    const i = indexClasseDansNiveau(code);
+
     if (type === 'jour') {
-        const pool = CONFIG.defisJour || [];
+        const pool = pools.jour || [];
         if (!pool.length) return null;
         const d = dernierJourOuvre();
         if (dateISO(d) < CONFIG.defisDebut) return null;
         const j = joursOuvresDepuis(CONFIG.defisDebut, d);
-        const k = (indexClasse(code) + j) % pool.length;
-        return { defi: pool[k], id: 'jour:' + dateISO(d) + ':' + k };
+        const k = (i + j) % pool.length;
+        return { defi: pool[k], id: 'jour:' + niveau + ':' + dateISO(d) + ':' + k };
     }
-    const pool = CONFIG.defisSemaine || [];
+    const pool = pools.semaine || [];
     if (!pool.length) return null;
     const debut = new Date(CONFIG.defisDebut + 'T00:00:00');
     const ajd = new Date();
     if (dateISO(ajd) < CONFIG.defisDebut) return null;
     const w = Math.floor((ajd - debut) / (7 * 86400000));
-    const k = (indexClasse(code) + w) % pool.length;
+    const k = (i + w) % pool.length;
     const lundi = new Date(debut);
     lundi.setDate(lundi.getDate() + w * 7);
-    return { defi: pool[k], id: 'semaine:' + dateISO(lundi) + ':' + k };
+    return { defi: pool[k], id: 'semaine:' + niveau + ':' + dateISO(lundi) + ':' + k };
 }
 
 function pointsDefi(type, sansIndice) {

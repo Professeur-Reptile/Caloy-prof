@@ -35,8 +35,8 @@ const CONFIG = {
     //                     message optionnel ("" pour ne rien afficher),
     //                     mettez couleur: "" pour masquer la carte
     //
-    // Les DÉFIS ne sont plus dans les classes : voir defisJour /
-    // defisSemaine plus bas (pools partagés avec rotation automatique).
+    // Les DÉFIS ne sont plus dans les classes : voir CONFIG.defis
+    // plus bas (un pool 4e et un pool 3e, rotation automatique).
 
     classes: {
 
@@ -177,20 +177,18 @@ const CONFIG = {
     },
 
     // ---- Défis ------------------------------------------------------
-    // Deux POOLS de défis partagés par toutes les classes (4e et 3e :
-    // choisissez des questions faisables par tous !) avec une ROTATION
-    // automatique pour que deux classes n'aient jamais le même défi en
-    // même temps :
-    //
-    //   • defisJour    : 10 défis → chaque jour de classe (lun-ven),
-    //     chaque classe reçoit un défi différent du pool ; le lendemain
-    //     tout décale d'un cran. En 2 semaines, chaque classe fait les
-    //     10 défis, puis ça reboucle (pensez à renouveler le pool !).
+    // Un POOL de défis PAR NIVEAU ("4e" et "3e"), chacun avec :
+    //   • jour    : 10 défis → chaque jour de classe (lun-ven), chaque
+    //     classe du niveau reçoit un défi différent du pool ; le
+    //     lendemain tout décale d'un cran. Jamais deux classes du même
+    //     niveau sur le même défi le même jour. En 2 semaines, chaque
+    //     classe fait les 10, puis ça reboucle (renouvelez le pool !).
     //     Le week-end, le défi du vendredi reste affiché.
-    //   • defisSemaine : 5 défis (un par classe) → chaque lundi, les
-    //     défis permutent entre les 5 classes. En 5 semaines, chaque
-    //     classe les a tous faits.
-    //   • defisDebut   : le LUNDI où démarre la rotation ("AAAA-MM-JJ").
+    //   • semaine : 5 défis → permutation entre les classes du niveau
+    //     chaque lundi.
+    // Un même défi peut figurer dans les DEUX pools (questions
+    // communes) ou dans un seul (spécial 4e ou spécial 3e).
+    //   • defisDebut : le LUNDI où démarre la rotation ("AAAA-MM-JJ").
     //
     // Les points vont à la CLASSE : le premier élève de la classe qui
     // trouve fait marquer sa classe, une seule fois par défi (géré par
@@ -200,101 +198,202 @@ const CONFIG = {
     // virgules/points ignorés ; listez plusieurs formes : ["1/2", "0,5"]).
     defisDebut: "2026-07-13",
 
-    defisJour: [
-        {
-            question: "Calcule : (−5) + 8 − (−3)",
-            indice: "Soustraire (−3), c'est ajouter 3…",
-            bonnesReponses: ["6", "+6"],
-            reponse: "<strong>6</strong> — (−5) + 8 = 3, puis 3 + 3 = 6."
-        },
-        {
-            question: "Quelle est la moitié de 3/4 ? (fraction ou décimal)",
-            indice: "Prendre la moitié, c'est multiplier par 1/2…",
-            bonnesReponses: ["3/8", "0.375", "0,375"],
-            reponse: "<strong>3/8</strong> — 3/4 × 1/2 = 3/8 (= 0,375)."
-        },
-        {
-            question: "2⁵ = ?",
-            indice: "2 × 2 × 2 × 2 × 2, étape par étape…",
-            bonnesReponses: ["32"],
-            reponse: "<strong>32</strong> — 2⁵ = 2×2×2×2×2 = 32."
-        },
-        {
-            question: "Combien font 15 % de 60 ?",
-            indice: "10 % de 60, puis 5 % de 60… additionne !",
-            bonnesReponses: ["9"],
-            reponse: "<strong>9</strong> — 10 % de 60 = 6, 5 % de 60 = 3, donc 6 + 3 = 9."
-        },
-        {
-            question: "Simplifie : 5x + 3x − 2x (réponse du type « 4x »)",
-            indice: "Compte les x comme des objets : 5 + 3 − 2…",
-            bonnesReponses: ["6x"],
-            reponse: "<strong>6x</strong> — (5 + 3 − 2)x = 6x."
-        },
-        {
-            question: "Quel est le plus petit nombre premier plus grand que 20 ?",
-            indice: "21 = 3 × 7, 22 = 2 × 11…",
-            bonnesReponses: ["23"],
-            reponse: "<strong>23</strong> — 21 et 22 se divisent, 23 n'est divisible que par 1 et lui-même."
-        },
-        {
-            question: "Un triangle a deux angles de 35° et 65°. Combien mesure le troisième ?",
-            indice: "La somme des angles d'un triangle fait 180°…",
-            bonnesReponses: ["80", "80°", "80degres", "80degrés"],
-            reponse: "<strong>80°</strong> — 180 − 35 − 65 = 80."
-        },
-        {
-            question: "1/2 + 1/4 = ? (fraction ou décimal)",
-            indice: "Mets tout sur le même dénominateur : des quarts…",
-            bonnesReponses: ["3/4", "0.75", "0,75", "6/8"],
-            reponse: "<strong>3/4</strong> — 1/2 = 2/4, donc 2/4 + 1/4 = 3/4 (= 0,75)."
-        },
-        {
-            question: "Le périmètre d'un carré est 36 cm. Quelle est son aire (en cm²) ?",
-            indice: "Trouve d'abord la longueur d'un côté…",
-            bonnesReponses: ["81", "81cm2", "81cm²"],
-            reponse: "<strong>81 cm²</strong> — côté = 36 ÷ 4 = 9, aire = 9 × 9 = 81."
-        },
-        {
-            question: "J'achète 3 cahiers à 2,50 € pièce et je paie avec un billet de 10 €. Combien me rend-on (en €) ?",
-            indice: "Calcule d'abord le prix des 3 cahiers…",
-            bonnesReponses: ["2.5", "2,5", "2.50", "2€50", "2.5€", "2.50€"],
-            reponse: "<strong>2,50 €</strong> — 3 × 2,50 = 7,50, et 10 − 7,50 = 2,50."
-        }
-    ],
+    defis: {
 
-    defisSemaine: [
-        {
-            question: "Quel est le plus petit nombre entier de TROIS chiffres divisible à la fois par 3 et par 4 ?",
-            indice: "Divisible par 3 et par 4 = divisible par 12…",
-            bonnesReponses: ["108"],
-            reponse: "<strong>108</strong> — il faut un multiple de 12 : 12 × 9 = 108 est le premier à trois chiffres (96 n'en a que deux)."
+        "4e": {
+            jour: [
+                {
+                    question: "Calcule : (−5) + 8 − (−3)",
+                    indice: "Soustraire (−3), c'est ajouter 3…",
+                    bonnesReponses: ["6", "+6"],
+                    reponse: "<strong>6</strong> — (−5) + 8 = 3, puis 3 + 3 = 6."
+                },
+                {
+                    question: "(−2)³ = ?",
+                    indice: "(−2) × (−2) × (−2)… attention au signe !",
+                    bonnesReponses: ["-8", "−8"],
+                    reponse: "<strong>−8</strong> — (−2)×(−2) = 4, puis 4×(−2) = −8. Un exposant impair garde le signe moins."
+                },
+                {
+                    question: "Quelle est la moitié de 3/4 ? (fraction ou décimal)",
+                    indice: "Prendre la moitié, c'est multiplier par 1/2…",
+                    bonnesReponses: ["3/8", "0.375", "0,375"],
+                    reponse: "<strong>3/8</strong> — 3/4 × 1/2 = 3/8 (= 0,375)."
+                },
+                {
+                    question: "Combien font 15 % de 60 ?",
+                    indice: "10 % de 60, puis 5 % de 60… additionne !",
+                    bonnesReponses: ["9"],
+                    reponse: "<strong>9</strong> — 10 % de 60 = 6, 5 % de 60 = 3, donc 6 + 3 = 9."
+                },
+                {
+                    question: "Simplifie : 5x + 3x − 2x (réponse du type « 4x »)",
+                    indice: "Compte les x comme des objets : 5 + 3 − 2…",
+                    bonnesReponses: ["6x"],
+                    reponse: "<strong>6x</strong> — (5 + 3 − 2)x = 6x."
+                },
+                {
+                    question: "2⁴ × 2³ = 2 puissance combien ?",
+                    indice: "Compte le nombre total de 2 multipliés…",
+                    bonnesReponses: ["7", "2^7", "2puissance7"],
+                    reponse: "<strong>2⁷</strong> — quatre 2 multipliés par trois 2 : ça fait sept 2. On ADDITIONNE les exposants : 4 + 3 = 7."
+                },
+                {
+                    question: "Un triangle a deux angles de 35° et 65°. Combien mesure le troisième ?",
+                    indice: "La somme des angles d'un triangle fait 180°…",
+                    bonnesReponses: ["80", "80°", "80degres", "80degrés"],
+                    reponse: "<strong>80°</strong> — 180 − 35 − 65 = 80."
+                },
+                {
+                    question: "1/2 + 1/4 = ? (fraction ou décimal)",
+                    indice: "Mets tout sur le même dénominateur : des quarts…",
+                    bonnesReponses: ["3/4", "0.75", "0,75", "6/8"],
+                    reponse: "<strong>3/4</strong> — 1/2 = 2/4, donc 2/4 + 1/4 = 3/4 (= 0,75)."
+                },
+                {
+                    question: "Le périmètre d'un carré est 36 cm. Quelle est son aire (en cm²) ?",
+                    indice: "Trouve d'abord la longueur d'un côté…",
+                    bonnesReponses: ["81", "81cm2", "81cm²"],
+                    reponse: "<strong>81 cm²</strong> — côté = 36 ÷ 4 = 9, aire = 9 × 9 = 81."
+                },
+                {
+                    question: "J'achète 3 cahiers à 2,50 € pièce et je paie avec un billet de 10 €. Combien me rend-on (en €) ?",
+                    indice: "Calcule d'abord le prix des 3 cahiers…",
+                    bonnesReponses: ["2.5", "2,5", "2.50", "2€50", "2.5€", "2.50€"],
+                    reponse: "<strong>2,50 €</strong> — 3 × 2,50 = 7,50, et 10 − 7,50 = 2,50."
+                }
+            ],
+            semaine: [
+                {
+                    question: "Quel est le plus petit nombre entier de TROIS chiffres divisible à la fois par 3 et par 4 ?",
+                    indice: "Divisible par 3 et par 4 = divisible par 12…",
+                    bonnesReponses: ["108"],
+                    reponse: "<strong>108</strong> — il faut un multiple de 12 : 12 × 9 = 108 est le premier à trois chiffres (96 n'en a que deux)."
+                },
+                {
+                    question: "La somme de trois entiers consécutifs vaut 141. Quel est le plus petit des trois ?",
+                    indice: "Appelle le nombre du milieu n : la somme fait 3n…",
+                    bonnesReponses: ["46"],
+                    reponse: "<strong>46</strong> — 141 ÷ 3 = 47 (le milieu), donc 46 + 47 + 48 = 141."
+                },
+                {
+                    question: "Un écran de télé mesure 80 cm de large et 60 cm de haut. Quelle est la longueur de sa diagonale (en cm) ?",
+                    indice: "La diagonale coupe l'écran en deux triangles rectangles… Pythagore peut t'aider !",
+                    bonnesReponses: ["100", "100cm", "1m"],
+                    reponse: "<strong>100 cm</strong> — d'après Pythagore : d² = 80² + 60² = 6400 + 3600 = 10000, donc d = 100. C'est comme ça qu'on mesure les écrans (en pouces) ! 📺"
+                },
+                {
+                    question: "Dans un groupe de 10 personnes, chacun serre la main de tous les autres une seule fois. Combien de poignées de main en tout ?",
+                    indice: "La 1re personne en serre 9, la 2e n'en a plus que 8 de nouvelles…",
+                    bonnesReponses: ["45"],
+                    reponse: "<strong>45</strong> — 9 + 8 + 7 + … + 1 = 45 (ou 10 × 9 ÷ 2)."
+                },
+                {
+                    question: "Un nénuphar double de surface chaque jour. Il recouvre tout l'étang en 30 jours. En combien de jours en recouvrait-il la MOITIÉ ?",
+                    indice: "Pars de la fin : la veille du jour 30, il était deux fois plus petit…",
+                    bonnesReponses: ["29", "29jours", "29j"],
+                    reponse: "<strong>29 jours</strong> — s'il double chaque jour, la moitié de l'étang c'est juste la veille de la fin. Pas 15 ! 🪷"
+                }
+            ]
         },
-        {
-            question: "La somme de trois entiers consécutifs vaut 141. Quel est le plus petit des trois ?",
-            indice: "Appelle le nombre du milieu n : la somme fait 3n…",
-            bonnesReponses: ["46"],
-            reponse: "<strong>46</strong> — 141 ÷ 3 = 47 (le milieu), donc 46 + 47 + 48 = 141."
-        },
-        {
-            question: "Quel est le chiffre des unités de 7⁴⁵ ?",
-            indice: "Regarde le dernier chiffre de 7¹, 7², 7³, 7⁴, 7⁵… un motif se répète !",
-            bonnesReponses: ["7"],
-            reponse: "<strong>7</strong> — les unités des puissances de 7 font 7, 9, 3, 1, 7, 9, 3, 1… (cycle de 4). 45 = 4 × 11 + 1, donc même unité que 7¹ : c'est 7."
-        },
-        {
-            question: "Dans un groupe de 10 personnes, chacun serre la main de tous les autres une seule fois. Combien de poignées de main en tout ?",
-            indice: "La 1re personne en serre 9, la 2e n'en a plus que 8 de nouvelles…",
-            bonnesReponses: ["45"],
-            reponse: "<strong>45</strong> — 9 + 8 + 7 + … + 1 = 45 (ou 10 × 9 ÷ 2)."
-        },
-        {
-            question: "Un nénuphar double de surface chaque jour. Il recouvre tout l'étang en 30 jours. En combien de jours en recouvrait-il la MOITIÉ ?",
-            indice: "Pars de la fin : la veille du jour 30, il était deux fois plus petit…",
-            bonnesReponses: ["29", "29jours", "29j"],
-            reponse: "<strong>29 jours</strong> — s'il double chaque jour, la moitié de l'étang c'est juste la veille de la fin. Pas 15 ! 🪷"
+
+        "3e": {
+            jour: [
+                {
+                    question: "f(x) = 3x − 5. Calcule f(4).",
+                    indice: "Remplace x par 4 dans la formule…",
+                    bonnesReponses: ["7"],
+                    reponse: "<strong>7</strong> — f(4) = 3 × 4 − 5 = 12 − 5 = 7."
+                },
+                {
+                    question: "On développe (x + 3)². Quel est le coefficient devant x ?",
+                    indice: "(a + b)² = a² + 2ab + b²…",
+                    bonnesReponses: ["6"],
+                    reponse: "<strong>6</strong> — (x + 3)² = x² + 6x + 9."
+                },
+                {
+                    question: "√81 + √16 = ?",
+                    indice: "Cherche les carrés parfaits…",
+                    bonnesReponses: ["13"],
+                    reponse: "<strong>13</strong> — √81 = 9 et √16 = 4, donc 9 + 4 = 13."
+                },
+                {
+                    question: "cos(60°) = ? (fraction ou décimal)",
+                    indice: "C'est une des valeurs à connaître par cœur… entre 0 et 1.",
+                    bonnesReponses: ["0.5", "1/2", "0,5"],
+                    reponse: "<strong>1/2 (= 0,5)</strong> — une valeur remarquable à retenir : cos(60°) = sin(30°) = 0,5."
+                },
+                {
+                    question: "84 = 2² × 3 × 7. Combien de facteurs premiers DIFFÉRENTS possède 84 ?",
+                    indice: "Compte les nombres premiers différents dans la décomposition…",
+                    bonnesReponses: ["3"],
+                    reponse: "<strong>3</strong> — les facteurs premiers de 84 sont 2, 3 et 7."
+                },
+                {
+                    question: "Résous : 2x + 5 = 17. Que vaut x ?",
+                    indice: "Enlève 5 des deux côtés, puis divise…",
+                    bonnesReponses: ["6", "x=6"],
+                    reponse: "<strong>6</strong> — 2x = 12, donc x = 6."
+                },
+                {
+                    question: "Combien font 15 % de 60 ?",
+                    indice: "10 % de 60, puis 5 % de 60… additionne !",
+                    bonnesReponses: ["9"],
+                    reponse: "<strong>9</strong> — 10 % de 60 = 6, 5 % de 60 = 3, donc 6 + 3 = 9."
+                },
+                {
+                    question: "Un triangle a deux angles de 35° et 65°. Combien mesure le troisième ?",
+                    indice: "La somme des angles d'un triangle fait 180°…",
+                    bonnesReponses: ["80", "80°", "80degres", "80degrés"],
+                    reponse: "<strong>80°</strong> — 180 − 35 − 65 = 80."
+                },
+                {
+                    question: "Quel est le plus petit nombre premier plus grand que 20 ?",
+                    indice: "21 = 3 × 7, 22 = 2 × 11…",
+                    bonnesReponses: ["23"],
+                    reponse: "<strong>23</strong> — 21 et 22 se divisent, 23 n'est divisible que par 1 et lui-même."
+                },
+                {
+                    question: "Le périmètre d'un carré est 36 cm. Quelle est son aire (en cm²) ?",
+                    indice: "Trouve d'abord la longueur d'un côté…",
+                    bonnesReponses: ["81", "81cm2", "81cm²"],
+                    reponse: "<strong>81 cm²</strong> — côté = 36 ÷ 4 = 9, aire = 9 × 9 = 81."
+                }
+            ],
+            semaine: [
+                {
+                    question: "Une échelle de 5 m est posée contre un mur ; son pied est à 3 m du mur. À quelle hauteur (en m) touche-t-elle le mur ?",
+                    indice: "Mur, sol, échelle : un triangle rectangle… Pythagore !",
+                    bonnesReponses: ["4", "4m", "400cm"],
+                    reponse: "<strong>4 m</strong> — h² = 5² − 3² = 25 − 9 = 16, donc h = 4. Le fameux triangle 3-4-5 ! 🪜"
+                },
+                {
+                    question: "Quel est le chiffre des unités de 7⁴⁵ ?",
+                    indice: "Regarde le dernier chiffre de 7¹, 7², 7³, 7⁴, 7⁵… un motif se répète !",
+                    bonnesReponses: ["7"],
+                    reponse: "<strong>7</strong> — les unités des puissances de 7 font 7, 9, 3, 1, 7, 9, 3, 1… (cycle de 4). 45 = 4 × 11 + 1, donc même unité que 7¹ : c'est 7."
+                },
+                {
+                    question: "Dans un groupe de 10 personnes, chacun serre la main de tous les autres une seule fois. Combien de poignées de main en tout ?",
+                    indice: "La 1re personne en serre 9, la 2e n'en a plus que 8 de nouvelles…",
+                    bonnesReponses: ["45"],
+                    reponse: "<strong>45</strong> — 9 + 8 + 7 + … + 1 = 45 (ou 10 × 9 ÷ 2)."
+                },
+                {
+                    question: "Un nénuphar double de surface chaque jour. Il recouvre tout l'étang en 30 jours. En combien de jours en recouvrait-il la MOITIÉ ?",
+                    indice: "Pars de la fin : la veille du jour 30, il était deux fois plus petit…",
+                    bonnesReponses: ["29", "29jours", "29j"],
+                    reponse: "<strong>29 jours</strong> — s'il double chaque jour, la moitié de l'étang c'est juste la veille de la fin. Pas 15 ! 🪷"
+                },
+                {
+                    question: "La somme de trois entiers consécutifs vaut 141. Quel est le plus petit des trois ?",
+                    indice: "Appelle le nombre du milieu n : la somme fait 3n…",
+                    bonnesReponses: ["46"],
+                    reponse: "<strong>46</strong> — 141 ÷ 3 = 47 (le milieu), donc 46 + 47 + 48 = 141."
+                }
+            ]
         }
-    ],
+    },
 
     // ---- Boîte à outils --------------------------------------------
     // Liens utiles affichés pour toutes les classes. Ajoutez, retirez,
