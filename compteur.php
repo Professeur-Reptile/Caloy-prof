@@ -12,8 +12,8 @@ if (file_exists($fichier)) {
 // Incrémenter
 $visites++;
 
-// Sauvegarder
-file_put_contents($fichier, $visites);
+// Sauvegarder (LOCK_EX évite de perdre des visites en cas d'accès simultanés)
+file_put_contents($fichier, $visites, LOCK_EX);
 
 // Retourner le résultat en JSON
 header('Content-Type: application/json');

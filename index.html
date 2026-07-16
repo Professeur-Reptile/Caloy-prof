@@ -3,6 +3,8 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="Cours de mathématiques en ligne pour le collège : vidéos de cours, exercices interactifs et corrections d'évaluations.">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>📐</text></svg>">
     <title>Cours de Mathématiques</title>
     <style>
         * {
@@ -160,6 +162,21 @@
             color: #10b981;
             background: rgba(16, 185, 129, 0.1);
             transform: translateY(-2px);
+        }
+
+        body.dark-mode nav {
+            background: linear-gradient(to bottom, #111827, #1f2937);
+            border-bottom-color: #374151;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.3);
+        }
+
+        body.dark-mode nav a {
+            color: #34d399;
+        }
+
+        body.dark-mode nav a:hover {
+            color: #6ee7b7;
+            background: rgba(52, 211, 153, 0.1);
         }
 
         .content {
@@ -1052,10 +1069,10 @@
 
             // Onglets de navigation (ajoutez/supprimez des onglets ici)
             navigation: [
-                { texte: "Cours", action: "showHome()" },
-                { texte: "Espace élève", action: "showPage('espace-eleve')" },
-                { texte: "Jeux", action: "showPage('jeux')" },
-                { texte: "Espace prof", action: "showPage('espace-prof')" }
+                { texte: "Cours", action: () => showHome() },
+                { texte: "Espace élève", action: () => showPage('espace-eleve') },
+                { texte: "Jeux", action: () => showPage('jeux') },
+                { texte: "Espace prof", action: () => showPage('espace-prof') }
             ]
         };
 
@@ -1135,23 +1152,8 @@
             {
                 id: "algebre-fractions",
                 titre: "Les fractions",
+                // Vidéos en préparation : ajoutez-les ici avec { titre: "...", url: "..." }
                 videos: [
-                    {
-                        titre: "Addition",
-                        url: "https://www.youtube.com/embed/placeholder"
-                    },
-                    {
-                        titre: "Soustraction",
-                        url: "https://www.youtube.com/embed/placeholder"
-                    },
-                    {
-                        titre: "Multiplication",
-                        url: "https://www.youtube.com/embed/placeholder"
-                    },
-                    {
-                        titre: "Division",
-                        url: "https://www.youtube.com/embed/placeholder"
-                    }
                 ]
             }
         ]
@@ -1550,10 +1552,12 @@
                 <div class="course-grid">`;
 
             for (const [key, matiere] of Object.entries(MATIERES)) {
+                const enPreparation = matiere.lecons.length === 0;
                 html += `
                     <div class="course-card" onclick="showSubjectPage('${key}')">
                         <h3>${matiere.emoji} ${matiere.nom}</h3>
                         <p>${matiere.description}</p>
+                        ${enPreparation ? '<span class="badge">🚧 Bientôt disponible</span>' : ''}
                     </div>`;
             }
 
@@ -1568,13 +1572,24 @@
                 <div class="breadcrumb">
                     <a href="#" onclick="showHome(); return false;">${CONFIG.nomContenu}</a> / ${matiere.nom}
                 </div>
-                <h1>${matiere.emoji} ${CONFIG.nomContenu} de ${matiere.nom}</h1>
+                <h1>${matiere.emoji} ${CONFIG.nomContenu} de ${matiere.nom}</h1>`;
+
+            if (matiere.lecons.length === 0) {
+                html += `
+                <div class="lesson-content">
+                    <p>🚧 Les ${CONFIG.nomContenu.toLowerCase()} de ${matiere.nom} sont en préparation et arriveront bientôt !</p>
+                </div>`;
+                return html;
+            }
+
+            html += `
                 <div class="course-grid">`;
 
             matiere.lecons.forEach((lecon, index) => {
+                const aDesVideos = lecon.videos && lecon.videos.length > 0;
                 html += `
                     <div class="course-card" onclick="showLesson('${lecon.id}')">
-                        <h3>Leçon ${index + 1} <span class="progress-badge" id="progress-${lecon.id}">0%</span></h3>
+                        <h3>Leçon ${index + 1} ${aDesVideos ? `<span class="progress-badge" id="progress-${lecon.id}">0%</span>` : ''}</h3>
                         <p>${lecon.titre}</p>
                     </div>`;
             });
@@ -1614,6 +1629,14 @@
                 html += `
                     <div class="lesson-content fade-in-section">
                         ${lecon.contenuHTML}
+                    </div>`;
+            }
+
+            // Si la leçon n'a encore ni vidéos ni contenu, afficher un message
+            if (!lecon.contenuHTML && (!lecon.videos || lecon.videos.length === 0)) {
+                html += `
+                    <div class="lesson-content">
+                        <p>🚧 Le contenu de cette leçon est en préparation et arrivera bientôt !</p>
                     </div>`;
             }
 
@@ -1769,7 +1792,7 @@
                 lien.textContent = onglet.texte;
                 lien.onclick = function(e) {
                     e.preventDefault();
-                    eval(onglet.action);
+                    onglet.action();
                 };
                 nav.appendChild(lien);
             });
@@ -1969,6 +1992,14 @@
         // ========================================
         // GESTION DE LA PROGRESSION
         // ========================================
+        function trouverLecon(lessonId) {
+            for (const matiere of Object.values(MATIERES)) {
+                const lecon = matiere.lecons.find(l => l.id === lessonId);
+                if (lecon) return lecon;
+            }
+            return null;
+        }
+
         function getProgress(lessonId) {
             const progress = localStorage.getItem(`progress-${lessonId}`);
             return progress ? JSON.parse(progress) : {};
@@ -1990,14 +2021,8 @@
         };
 
         function updateGlobalProgress(lessonId) {
-            // Trouver la leçon
-            let lecon = null;
-            for (const matiere of Object.values(MATIERES)) {
-                lecon = matiere.lecons.find(l => l.id === lessonId);
-                if (lecon) break;
-            }
-
-            if (!lecon || !lecon.videos) return;
+            const lecon = trouverLecon(lessonId);
+            if (!lecon || !lecon.videos || lecon.videos.length === 0) return;
 
             const progress = getProgress(lessonId);
             const totalItems = lecon.videos.length; // seulement les vidéos
@@ -2118,11 +2143,13 @@
         }
 
         function calculateLessonProgress(lessonId) {
+            // Le pourcentage est calculé sur le nombre total de vidéos de la leçon,
+            // pas seulement sur celles déjà cochées une fois
+            const lecon = trouverLecon(lessonId);
+            if (!lecon || !lecon.videos || lecon.videos.length === 0) return 0;
             const progress = getProgress(lessonId);
-            const videoIds = Object.keys(progress);
-            if (videoIds.length === 0) return 0;
             const completed = Object.values(progress).filter(v => v).length;
-            return Math.round((completed / videoIds.length) * 100);
+            return Math.min(100, Math.round((completed / lecon.videos.length) * 100));
         }
 
         function updateAllProgressBadges() {
