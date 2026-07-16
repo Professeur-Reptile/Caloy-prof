@@ -254,6 +254,96 @@ body {
     line-height: 1.6;
 }
 
+/* Parcours de l'année (historique des chapitres) */
+.chapitres {
+    position: relative;
+    padding-left: 6px;
+}
+
+.chapitre {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    padding: 9px 0;
+}
+
+/* Trait vertical reliant les étapes */
+.chapitre::before {
+    content: '';
+    position: absolute;
+    left: 15px;
+    top: -14px;
+    height: 28px;
+    width: 2px;
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.chapitre:first-child::before { display: none; }
+
+.chapitre-badge {
+    position: relative;
+    z-index: 1;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.95em;
+    font-weight: 800;
+    flex-shrink: 0;
+}
+
+.chapitre.done .chapitre-badge {
+    background: rgba(52, 211, 153, 0.18);
+    border: 2px solid var(--green);
+    color: var(--green);
+}
+
+.chapitre.done .chapitre-titre { color: var(--text-dim); }
+
+.chapitre.current .chapitre-badge {
+    background: linear-gradient(135deg, var(--violet), var(--cyan));
+    border: none;
+    animation: pulse 2s ease-in-out infinite;
+}
+
+@keyframes pulse {
+    0%, 100% { box-shadow: 0 0 0 0 rgba(139, 92, 246, 0.5); }
+    50% { box-shadow: 0 0 0 8px rgba(139, 92, 246, 0); }
+}
+
+.chapitre.current .chapitre-titre {
+    font-weight: 800;
+    font-size: 1.08em;
+}
+
+.chapitre-tag {
+    display: inline-block;
+    margin-left: 8px;
+    font-size: 0.7em;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    color: #0b1020;
+    background: linear-gradient(90deg, var(--violet), var(--cyan));
+    padding: 3px 10px;
+    border-radius: 999px;
+    vertical-align: middle;
+}
+
+.chapitre.next .chapitre-badge {
+    background: transparent;
+    border: 2px dashed rgba(255, 255, 255, 0.25);
+    color: var(--text-dim);
+}
+
+.chapitre.next .chapitre-titre {
+    color: var(--text-dim);
+    font-style: italic;
+}
+
 /* Compte à rebours */
 .countdown { text-align: center; padding: 10px 0; }
 
