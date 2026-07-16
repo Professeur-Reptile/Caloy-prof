@@ -161,7 +161,7 @@ function renderCountdown(classe) {
         '<div class="what"><strong>' + (ev.titre || 'Évaluation') + '</strong><br>le ' + dateTxt + '</div>';
 }
 
-// ---- Batterie de comportement ----
+// ---- Feu tricolore du comportement ----
 function renderComportement(classe) {
     const carte = document.getElementById('comportement-card');
     const compo = classe.comportement;
@@ -172,22 +172,24 @@ function renderComportement(classe) {
     carte.classList.remove('hidden');
 
     const niveau = Math.max(0, Math.min(100, compo.niveau));
-    let etat, emoji;
-    if (niveau >= 90)      { etat = 'pleine';  emoji = '🤩'; }
-    else if (niveau >= 70) { etat = 'haute';   emoji = '😄'; }
-    else if (niveau >= 50) { etat = 'moyenne'; emoji = '🙂'; }
-    else if (niveau >= 30) { etat = 'basse';   emoji = '😬'; }
-    else                   { etat = 'vide';    emoji = '🚨'; }
+    let couleur, emoji, label;
+    if (niveau >= 70)      { couleur = 'vert';   emoji = niveau >= 90 ? '🤩' : '😄'; label = 'Feu vert — tout roule !'; }
+    else if (niveau >= 40) { couleur = 'orange'; emoji = '😬'; label = 'Feu orange — on se ressaisit !'; }
+    else                   { couleur = 'rouge';  emoji = '🚨'; label = 'Feu rouge — stop, on se reprend.'; }
 
-    document.getElementById('batterie-zone').innerHTML =
-        '<div class="batterie-ligne">' +
-            '<div class="batterie ' + etat + '">' +
-                '<div class="batterie-tete"></div>' +
-                '<div class="batterie-corps"><div class="batterie-niveau" style="height:' + niveau + '%"></div></div>' +
+    document.getElementById('feu-zone').innerHTML =
+        '<div class="feu-ligne">' +
+            '<div class="feu ' + couleur + '">' +
+                '<div class="feu-lampe rouge"></div>' +
+                '<div class="feu-lampe orange"></div>' +
+                '<div class="feu-lampe verte"></div>' +
             '</div>' +
-            '<div class="batterie-pct">' + emoji + ' ' + niveau + '%</div>' +
+            '<div class="feu-info">' +
+                '<div class="feu-pct">' + emoji + ' ' + niveau + '%</div>' +
+                '<div class="feu-label">' + label + '</div>' +
+            '</div>' +
         '</div>' +
-        (compo.message ? '<p class="batterie-msg">💬 ' + compo.message + '</p>' : '');
+        (compo.message ? '<p class="feu-msg">💬 ' + compo.message + '</p>' : '');
 }
 
 // ---- Défi de la semaine ----

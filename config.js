@@ -30,8 +30,9 @@ const CONFIG = {
     //   • annonces      : vos messages, le plus récent EN PREMIER
     //   • devoirs       : le travail à faire, avec la date de rendu
     //   • prochaineEval : date au format "AAAA-MM-JJ" ("" si rien de prévu)
-    //   • comportement  : la batterie de comportement de la classe !
-    //                     niveau de 0 (vide 🚨) à 100 (pleine 🤩),
+    //   • comportement  : le feu tricolore de la classe !
+    //                     niveau de 0 à 100 : vert à partir de 70,
+    //                     orange à partir de 40, rouge en dessous,
     //                     message optionnel ("" pour ne rien afficher),
     //                     mettez niveau: null pour masquer la carte
     //   • defi          : le défi de la semaine
@@ -96,7 +97,7 @@ const CONFIG = {
             prochaineEval: { date: "2026-07-28", titre: "Éval — Calcul littéral" },
             comportement: {
                 niveau: 55,
-                message: "Trop de bavardages cette semaine… je sais que vous pouvez recharger la batterie. 🔌"
+                message: "Trop de bavardages cette semaine… je sais que vous pouvez repasser au vert. 🚦"
             },
             defi: {
                 id: "4B-2026-s38",
@@ -187,7 +188,7 @@ const CONFIG = {
             prochaineEval: { date: "2026-07-30", titre: "Éval — Théorème de Thalès" },
             comportement: {
                 niveau: 40,
-                message: "Batterie faible : trop d'agitation. On repart du bon pied lundi, je compte sur vous."
+                message: "Feu orange : trop d'agitation. On repart du bon pied lundi, je compte sur vous."
             },
             defi: {
                 id: "3B-2026-s38",
