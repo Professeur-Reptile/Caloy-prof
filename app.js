@@ -16,12 +16,19 @@ function setClasse(code) {
 }
 
 // ---- XP, niveaux et série de jours ----
+// L'XP est compté PAR CLASSE : chaque classe a son propre compteur,
+// résoudre le défi d'une autre classe ne rapporte rien à la sienne.
+function xpKey() {
+    return 'mc-xp:' + localStorage.getItem('mc-classe');
+}
+
 function getXP() {
-    return parseInt(localStorage.getItem('mc-xp') || '0', 10);
+    return parseInt(localStorage.getItem(xpKey()) || '0', 10);
 }
 
 function addXP(montant) {
-    localStorage.setItem('mc-xp', String(getXP() + montant));
+    if (!getClasse()) return;
+    localStorage.setItem(xpKey(), String(getXP() + montant));
     renderXP();
     const zone = document.getElementById('xp-pop-zone');
     zone.innerHTML = '<span class="xp-pop">+' + montant + ' XP ✨</span>';
@@ -417,6 +424,7 @@ function render() {
     }
     const classe = CONFIG.classes[code];
     document.getElementById('hero-classe').textContent = 'les ' + classe.nom;
+    renderXP();
     renderClassPicker(code);
     renderNow(classe);
     renderChapitres(classe);
@@ -428,6 +436,12 @@ function render() {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
+    // Migration : l'XP était global ('mc-xp') avant d'être compté par classe
+    const ancienXP = localStorage.getItem('mc-xp');
+    if (ancienXP !== null) {
+        if (getClasse()) localStorage.setItem(xpKey(), ancienXP);
+        localStorage.removeItem('mc-xp');
+    }
     document.title = CONFIG.titreSite + ' 🚀';
     renderContact();
     renderOutils();
