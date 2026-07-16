@@ -21,3 +21,11 @@ jobs:
           password: ${{ secrets.FTP_PASSWORD }}
           server-dir: /www/
           local-dir: ./
+          # compteur.txt est exclu pour ne pas écraser le compteur de visites
+          # du serveur à chaque déploiement (les 3 premiers motifs sont les
+          # exclusions par défaut de l'action, à conserver)
+          exclude: |
+            **/.git*
+            **/.git*/**
+            **/node_modules/**
+            compteur.txt

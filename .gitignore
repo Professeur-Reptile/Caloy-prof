@@ -2,6 +2,9 @@
 .claude/
 *.zip
 
+# Compteur de visites (géré par le serveur, ne pas versionner)
+compteur.txt
+
 # Fichiers système
 .DS_Store
 Thumbs.db
