@@ -676,6 +676,50 @@ footer a { color: var(--cyan); }
 .choose-box .choices button.n4 { background: linear-gradient(135deg, var(--cyan), var(--green)); }
 .choose-box .choices button.n3 { background: linear-gradient(135deg, var(--violet), var(--pink)); }
 
+/* Écran de nuit : recouvre tout le site aux heures de dodo */
+.dodo-overlay {
+    position: fixed;
+    inset: 0;
+    background: linear-gradient(180deg, #050814, #0b1020 60%, #131a35);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 200;
+    padding: 20px;
+    text-align: center;
+}
+
+.dodo-box {
+    max-width: 460px;
+}
+
+.dodo-lune {
+    font-size: 5em;
+    animation: flotte 3s ease-in-out infinite;
+}
+
+@keyframes flotte {
+    0%, 100% { transform: translateY(0); }
+    50% { transform: translateY(-12px); }
+}
+
+.dodo-box h2 {
+    font-size: 1.8em;
+    font-weight: 800;
+    margin: 16px 0 10px;
+}
+
+.dodo-box p {
+    color: var(--text-dim);
+    font-size: 1.05em;
+}
+
+.dodo-retour {
+    margin-top: 18px;
+    font-weight: 700;
+    color: var(--yellow);
+}
+
 .hidden { display: none !important; }
 
 @media (max-width: 600px) {
