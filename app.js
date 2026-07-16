@@ -531,7 +531,22 @@ function renderChooseOverlay() {
 
 // ---- Écran de nuit : le site est bloqué aux heures de dodo ----
 function renderNuit() {
-    const overlay = document.getElementById('dodo-overlay');
+    let overlay = document.getElementById('dodo-overlay');
+    // Si le HTML en cache est une ancienne version, on crée l'écran
+    // nous-mêmes : le blocage ne dépend que de ce fichier.
+    if (!overlay) {
+        overlay = document.createElement('div');
+        overlay.id = 'dodo-overlay';
+        overlay.className = 'dodo-overlay hidden';
+        overlay.innerHTML =
+            '<div class="dodo-box">' +
+                '<div class="dodo-lune">🌙</div>' +
+                '<h2>C\'est l\'heure de dormir !</h2>' +
+                '<p id="dodo-texte"></p>' +
+                '<p class="dodo-retour" id="dodo-retour"></p>' +
+            '</div>';
+        document.body.appendChild(overlay);
+    }
     const nuit = CONFIG.nuit;
     if (!nuit || !nuit.texte) { overlay.classList.add('hidden'); return; }
 
@@ -584,6 +599,12 @@ function render() {
 }
 
 window.addEventListener('DOMContentLoaded', function() {
+    // L'écran de nuit d'abord : rien ne doit pouvoir l'empêcher
+    renderNuit();
+    // Re-vérifie chaque minute : l'écran de nuit tombe (ou se lève)
+    // même si l'onglet reste ouvert
+    setInterval(renderNuit, 60000);
+
     document.title = CONFIG.titreSite + ' 🚀';
     renderContact();
     renderOutils();
@@ -592,8 +613,4 @@ window.addEventListener('DOMContentLoaded', function() {
     render();
     chargerTotaux();
     compteurVisites();
-    renderNuit();
-    // Re-vérifie chaque minute : l'écran de nuit tombe (ou se lève)
-    // même si l'onglet reste ouvert
-    setInterval(renderNuit, 60000);
 });

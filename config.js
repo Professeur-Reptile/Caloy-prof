@@ -23,7 +23,7 @@ const CONFIG = {
     // (un écran « c'est l'heure de dormir » recouvre tout). Mettez
     // texte: "" pour désactiver le blocage.
     nuit: {
-        debutHeure: 22,  // bloqué à partir de 21 h…
+        debutHeure: 22,  // bloqué à partir de 22 h…
         finHeure: 6,     // …jusqu'à 6 h du matin
         texte: "Les défis seront encore là demain — ton cerveau retient mieux les maths après une bonne nuit. 😴"
     },
