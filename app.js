@@ -161,6 +161,35 @@ function renderCountdown(classe) {
         '<div class="what"><strong>' + (ev.titre || 'Évaluation') + '</strong><br>le ' + dateTxt + '</div>';
 }
 
+// ---- Batterie de comportement ----
+function renderComportement(classe) {
+    const carte = document.getElementById('comportement-card');
+    const compo = classe.comportement;
+    if (!compo || compo.niveau === null || compo.niveau === undefined) {
+        carte.classList.add('hidden');
+        return;
+    }
+    carte.classList.remove('hidden');
+
+    const niveau = Math.max(0, Math.min(100, compo.niveau));
+    let etat, emoji;
+    if (niveau >= 90)      { etat = 'pleine';  emoji = '🤩'; }
+    else if (niveau >= 70) { etat = 'haute';   emoji = '😄'; }
+    else if (niveau >= 50) { etat = 'moyenne'; emoji = '🙂'; }
+    else if (niveau >= 30) { etat = 'basse';   emoji = '😬'; }
+    else                   { etat = 'vide';    emoji = '🚨'; }
+
+    document.getElementById('batterie-zone').innerHTML =
+        '<div class="batterie-ligne">' +
+            '<div class="batterie ' + etat + '">' +
+                '<div class="batterie-corps"><div class="batterie-niveau" style="width:' + niveau + '%"></div></div>' +
+                '<div class="batterie-tete"></div>' +
+            '</div>' +
+            '<div class="batterie-pct">' + emoji + ' ' + niveau + '%</div>' +
+        '</div>' +
+        (compo.message ? '<p class="batterie-msg">💬 ' + compo.message + '</p>' : '');
+}
+
 // ---- Défi de la semaine ----
 function defisReussis() {
     try { return JSON.parse(localStorage.getItem('mc-defis')) || {}; } catch (e) { return {}; }
@@ -277,6 +306,7 @@ function render() {
     renderClassPicker(code);
     renderNow(classe);
     renderChapitres(classe);
+    renderComportement(classe);
     renderAnnonces(classe);
     renderDevoirs(classe);
     renderCountdown(classe);

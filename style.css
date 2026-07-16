@@ -254,6 +254,83 @@ body {
     line-height: 1.6;
 }
 
+/* Batterie de comportement */
+.batterie-ligne {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.batterie {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    min-width: 200px;
+    max-width: 420px;
+}
+
+.batterie-corps {
+    flex: 1;
+    height: 38px;
+    border: 3px solid rgba(255, 255, 255, 0.35);
+    border-radius: 10px;
+    padding: 4px;
+    background: rgba(255, 255, 255, 0.04);
+}
+
+.batterie-tete {
+    width: 7px;
+    height: 16px;
+    background: rgba(255, 255, 255, 0.35);
+    border-radius: 0 4px 4px 0;
+    margin-left: 3px;
+}
+
+.batterie-niveau {
+    height: 100%;
+    border-radius: 5px;
+    transition: width 0.8s ease;
+}
+
+.batterie.pleine .batterie-niveau,
+.batterie.haute .batterie-niveau {
+    background: linear-gradient(90deg, #059669, var(--green));
+}
+
+.batterie.moyenne .batterie-niveau {
+    background: linear-gradient(90deg, #d97706, var(--yellow));
+}
+
+.batterie.basse .batterie-niveau {
+    background: linear-gradient(90deg, #ea580c, #f97316);
+}
+
+.batterie.vide .batterie-niveau {
+    background: linear-gradient(90deg, #dc2626, var(--pink));
+    animation: clignote 1.2s ease-in-out infinite;
+}
+
+@keyframes clignote {
+    0%, 100% { opacity: 1; }
+    50% { opacity: 0.45; }
+}
+
+.batterie-pct {
+    font-size: 1.5em;
+    font-weight: 800;
+    white-space: nowrap;
+}
+
+.batterie-msg {
+    margin-top: 14px;
+    color: var(--text-dim);
+    line-height: 1.6;
+    background: var(--card-2);
+    border-radius: 12px;
+    padding: 12px 16px;
+}
+
 /* Parcours de l'année (historique des chapitres) */
 .chapitres {
     position: relative;
