@@ -505,6 +505,60 @@ body {
 
 .defi-indice.visible { display: block; }
 
+/* Saisie de la réponse au défi */
+.defi-saisie {
+    display: flex;
+    gap: 10px;
+    flex-wrap: wrap;
+    margin-bottom: 10px;
+}
+
+.defi-saisie input {
+    flex: 1;
+    min-width: 140px;
+    background: var(--card-2);
+    border: 2px solid var(--border);
+    border-radius: 999px;
+    padding: 12px 18px;
+    color: var(--text);
+    font-size: 1em;
+    font-family: inherit;
+    outline: none;
+    transition: border-color 0.2s;
+}
+
+.defi-saisie input:focus { border-color: var(--cyan); }
+
+.defi-saisie input::placeholder { color: var(--text-dim); }
+
+@keyframes shake {
+    0%, 100% { transform: translateX(0); }
+    20% { transform: translateX(-8px); }
+    40% { transform: translateX(8px); }
+    60% { transform: translateX(-5px); }
+    80% { transform: translateX(5px); }
+}
+
+.defi-saisie input.shake {
+    animation: shake 0.45s ease;
+    border-color: var(--pink);
+}
+
+.defi-feedback {
+    color: var(--pink);
+    font-weight: 600;
+    min-height: 1.4em;
+    margin-bottom: 8px;
+}
+
+.defi-statut {
+    margin-top: 12px;
+    font-weight: 700;
+    color: var(--text-dim);
+}
+
+.defi-statut.ok { color: var(--green); }
+
 /* Boîte à outils */
 .shortcuts {
     display: grid;
