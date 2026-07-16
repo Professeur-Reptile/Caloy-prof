@@ -34,15 +34,9 @@ const CONFIG = {
     //                     couleur : "vert", "orange" ou "rouge",
     //                     message optionnel ("" pour ne rien afficher),
     //                     mettez couleur: "" pour masquer la carte
-    //   • defi          : le défi de la semaine
-    //       - id : UNIQUE, à changer à chaque nouveau défi (sinon pas
-    //         de nouveaux XP !)
-    //       - bonnesReponses : les réponses acceptées (majuscules,
-    //         espaces et virgules/points sont ignorés à la correction ;
-    //         listez plusieurs formes : ["100", "100cm", "1m"]).
-    //         Si la liste est absente, le défi repasse en simple
-    //         bouton « J'ai trouvé » sans vérification.
-    //       - reponse : l'explication affichée après la réussite
+    //
+    // Les DÉFIS ne sont plus dans les classes : voir CONFIG.defis
+    // plus bas (défi du jour + défi de la semaine, par niveau).
 
     classes: {
 
@@ -71,13 +65,6 @@ const CONFIG = {
             comportement: {
                 couleur: "vert",
                 message: "Très bonne semaine, classe agréable — continuez comme ça !"
-            },
-            defi: {
-                id: "4A-2026-s29",
-                question: "Un écran de télé mesure 80 cm de large et 60 cm de haut. Quelle est la longueur de sa diagonale ?",
-                indice: "La diagonale coupe l'écran en deux triangles rectangles… Pythagore peut t'aider !",
-                bonnesReponses: ["100", "100cm", "1m"],
-                reponse: "<strong>100 cm</strong> — d'après Pythagore : d² = 80² + 60² = 6400 + 3600 = 10000, donc d = 100. C'est comme ça qu'on mesure les écrans (en pouces) ! 📺"
             }
         },
 
@@ -104,13 +91,6 @@ const CONFIG = {
             comportement: {
                 couleur: "rouge",
                 message: "Séance de mardi très agitée : feu rouge. On en parle lundi, et je sais que vous pouvez repasser au vert très vite. 🚦"
-            },
-            defi: {
-                id: "4B-2026-s29",
-                question: "Je pense à un nombre. Je le double, j'ajoute 5, et j'obtiens 17. Écris le calcul « à l'envers » et trouve mon nombre.",
-                indice: "Pars de 17 : enlève 5, puis partage en deux…",
-                bonnesReponses: ["6"],
-                reponse: "<strong>6</strong> — (17 − 5) ÷ 2 = 6. En langage calcul littéral : 2x + 5 = 17. Tu viens de résoudre une équation sans le savoir ! 💪"
             }
         },
 
@@ -138,13 +118,6 @@ const CONFIG = {
             comportement: {
                 couleur: "orange",
                 message: "Bon travail, mais trop de retards de matériel cette semaine : pensez à vos affaires !"
-            },
-            defi: {
-                id: "4C-2026-s29",
-                question: "Un écran de télé mesure 80 cm de large et 60 cm de haut. Quelle est la longueur de sa diagonale ?",
-                indice: "La diagonale coupe l'écran en deux triangles rectangles… Pythagore peut t'aider !",
-                bonnesReponses: ["100", "100cm", "1m"],
-                reponse: "<strong>100 cm</strong> — d'après Pythagore : d² = 80² + 60² = 6400 + 3600 = 10000, donc d = 100. C'est comme ça qu'on mesure les écrans (en pouces) ! 📺"
             }
         },
 
@@ -173,13 +146,6 @@ const CONFIG = {
             comportement: {
                 couleur: "vert",
                 message: "Classe au top, un plaisir de vous faire cours. 👏"
-            },
-            defi: {
-                id: "3A-2026-s29",
-                question: "Un skateur descend une rampe de 4 m qui fait un angle de 30° avec le sol. De quelle hauteur part-il ?",
-                indice: "Fais un schéma : la rampe est l'hypoténuse, la hauteur est le côté opposé à l'angle… sin ou cos ?",
-                bonnesReponses: ["2", "2m", "200cm"],
-                reponse: "<strong>2 m</strong> — sin(30°) = hauteur ÷ 4, donc hauteur = 4 × sin(30°) = 4 × 0,5 = 2. 🛹"
             }
         },
 
@@ -206,14 +172,139 @@ const CONFIG = {
             comportement: {
                 couleur: "orange",
                 message: "Feu orange : trop d'agitation. On repart du bon pied lundi, je compte sur vous."
-            },
-            defi: {
-                id: "3B-2026-s29",
-                question: "Pour mesurer la hauteur d'un arbre, Léa plante un bâton d'1 m qui fait une ombre de 60 cm. Au même moment, l'ombre de l'arbre mesure 4,20 m. Quelle est la hauteur de l'arbre ?",
-                indice: "Les rayons du soleil sont parallèles… deux triangles, une même proportion : c'est Thalès !",
-                bonnesReponses: ["7", "7m", "700cm"],
-                reponse: "<strong>7 m</strong> — hauteur ÷ 4,20 = 1 ÷ 0,60, donc hauteur = 4,20 ÷ 0,60 = 7. La méthode de Thalès lui-même pour mesurer les pyramides ! 🌳"
             }
+        }
+    },
+
+    // ---- Défis ------------------------------------------------------
+    // Les défis sont définis PAR NIVEAU (les 4e ont les mêmes défis,
+    // les 3e aussi) et PROGRAMMÉS À L'AVANCE : chaque défi a une date
+    // de début "AAAA-MM-JJ", le site affiche automatiquement le plus
+    // récent déjà commencé. Vous pouvez donc préparer des semaines
+    // entières d'avance.
+    //
+    //   • jour    : un défi rapide par jour de classe
+    //   • semaine : un défi plus corsé qui reste toute la semaine
+    //
+    // Les points vont à la CLASSE : le premier élève de la classe qui
+    // trouve fait marquer sa classe, une seule fois par défi (géré par
+    // defis.php sur le serveur).
+    //
+    // bonnesReponses : les réponses acceptées (majuscules, espaces et
+    // virgules/points ignorés à la correction ; listez plusieurs
+    // formes : ["100", "100cm", "1m"]).
+    defis: {
+
+        "4e": {
+            jour: [
+                {
+                    debut: "2026-07-13",
+                    question: "Calcule : (−3) + (−9) − (−5)",
+                    indice: "Soustraire (−5), c'est ajouter 5…",
+                    bonnesReponses: ["-7", "−7"],
+                    reponse: "<strong>−7</strong> — (−3) + (−9) = −12, puis −12 + 5 = −7."
+                },
+                {
+                    debut: "2026-07-14",
+                    question: "Quel est le double de 3/4 ? (fraction ou décimal)",
+                    indice: "Doubler une fraction, c'est doubler son numérateur…",
+                    bonnesReponses: ["3/2", "1.5", "6/4", "1,5"],
+                    reponse: "<strong>3/2 (= 1,5)</strong> — 2 × 3/4 = 6/4 = 3/2."
+                },
+                {
+                    debut: "2026-07-15",
+                    question: "2⁵ = ?",
+                    indice: "2 × 2 × 2 × 2 × 2, étape par étape…",
+                    bonnesReponses: ["32"],
+                    reponse: "<strong>32</strong> — 2⁵ = 2×2×2×2×2 = 32."
+                },
+                {
+                    debut: "2026-07-16",
+                    question: "Simplifie : 5x + 3x − 2x (réponse du type « 4x »)",
+                    indice: "Compte les x comme des objets : 5 objets + 3 objets − 2 objets…",
+                    bonnesReponses: ["6x"],
+                    reponse: "<strong>6x</strong> — (5 + 3 − 2)x = 6x."
+                },
+                {
+                    debut: "2026-07-17",
+                    question: "Un article à 40 € est soldé à −25 %. Quel est le nouveau prix (en €) ?",
+                    indice: "25 %, c'est un quart…",
+                    bonnesReponses: ["30", "30€", "30euros"],
+                    reponse: "<strong>30 €</strong> — 25 % de 40 = 10, donc 40 − 10 = 30."
+                }
+            ],
+            semaine: [
+                {
+                    debut: "2026-07-13",
+                    question: "Quel est le plus petit nombre entier de TROIS chiffres divisible à la fois par 3 et par 4 ?",
+                    indice: "Divisible par 3 et par 4 = divisible par 12…",
+                    bonnesReponses: ["108"],
+                    reponse: "<strong>108</strong> — il faut un multiple de 12 : 12 × 9 = 108 est le premier à trois chiffres (96 n'en a que deux)."
+                },
+                {
+                    debut: "2026-07-20",
+                    question: "La somme de trois entiers consécutifs vaut 141. Quel est le plus petit des trois ?",
+                    indice: "Appelle le nombre du milieu n : la somme fait 3n…",
+                    bonnesReponses: ["46"],
+                    reponse: "<strong>46</strong> — 141 ÷ 3 = 47 (le milieu), donc 46 + 47 + 48 = 141."
+                }
+            ]
+        },
+
+        "3e": {
+            jour: [
+                {
+                    debut: "2026-07-13",
+                    question: "84 = 2² × 3 × 7. Combien de facteurs premiers DIFFÉRENTS possède 84 ?",
+                    indice: "Compte les nombres premiers différents dans la décomposition…",
+                    bonnesReponses: ["3"],
+                    reponse: "<strong>3</strong> — les facteurs premiers de 84 sont 2, 3 et 7."
+                },
+                {
+                    debut: "2026-07-14",
+                    question: "f(x) = 3x − 5. Calcule f(4).",
+                    indice: "Remplace x par 4 dans la formule…",
+                    bonnesReponses: ["7"],
+                    reponse: "<strong>7</strong> — f(4) = 3 × 4 − 5 = 12 − 5 = 7."
+                },
+                {
+                    debut: "2026-07-15",
+                    question: "On développe (x + 3)². Quel est le coefficient devant x ?",
+                    indice: "(a + b)² = a² + 2ab + b²…",
+                    bonnesReponses: ["6"],
+                    reponse: "<strong>6</strong> — (x + 3)² = x² + 6x + 9."
+                },
+                {
+                    debut: "2026-07-16",
+                    question: "√81 + √16 = ?",
+                    indice: "Cherche les carrés parfaits…",
+                    bonnesReponses: ["13"],
+                    reponse: "<strong>13</strong> — √81 = 9 et √16 = 4, donc 9 + 4 = 13."
+                },
+                {
+                    debut: "2026-07-17",
+                    question: "cos(60°) = ? (fraction ou décimal)",
+                    indice: "C'est une des valeurs à connaître par cœur… entre 0 et 1.",
+                    bonnesReponses: ["0.5", "1/2", "0,5"],
+                    reponse: "<strong>1/2 (= 0,5)</strong> — une valeur remarquable à retenir : cos(60°) = sin(30°) = 0,5."
+                }
+            ],
+            semaine: [
+                {
+                    debut: "2026-07-13",
+                    question: "Une échelle de 5 m est posée contre un mur ; son pied est à 3 m du mur. À quelle hauteur (en m) touche-t-elle le mur ?",
+                    indice: "Mur, sol, échelle : un triangle rectangle… Pythagore !",
+                    bonnesReponses: ["4", "4m", "400cm"],
+                    reponse: "<strong>4 m</strong> — h² = 5² − 3² = 25 − 9 = 16, donc h = 4. Le fameux triangle 3-4-5 ! 🪜"
+                },
+                {
+                    debut: "2026-07-20",
+                    question: "Quel est le chiffre des unités de 7⁴⁵ ?",
+                    indice: "Regarde le dernier chiffre de 7¹, 7², 7³, 7⁴, 7⁵… un motif se répète !",
+                    bonnesReponses: ["7"],
+                    reponse: "<strong>7</strong> — les unités des puissances de 7 font 7, 9, 3, 1, 7, 9, 3, 1… (cycle de 4). 45 = 4 × 11 + 1, donc même unité que 7¹ : c'est 7."
+                }
+            ]
         }
     },
 
@@ -226,20 +317,22 @@ const CONFIG = {
         { emoji: "📐", label: "GeoGebra", desc: "Géométrie dynamique", url: "https://www.geogebra.org/" }
     ],
 
-    // ---- Niveaux XP -------------------------------------------------
-    // Barème des niveaux. Vous pouvez changer les noms et les seuils.
+    // ---- Niveaux XP de classe ---------------------------------------
+    // Barème des niveaux (XP cumulés par la classe sur l'année).
+    // Vous pouvez changer les noms et les seuils.
     niveauxXP: [
         { min: 0, nom: "🐣 Débutant" },
-        { min: 50, nom: "🧮 Apprenti" },
-        { min: 150, nom: "⚡ Calculateur" },
-        { min: 300, nom: "🔥 Expert" },
-        { min: 500, nom: "🏆 Légende des Maths" }
+        { min: 150, nom: "🧮 Apprenti" },
+        { min: 450, nom: "⚡ Calculateur" },
+        { min: 1000, nom: "🔥 Expert" },
+        { min: 2000, nom: "🏆 Légende des Maths" }
     ],
 
-    // XP gagnés par action
+    // XP gagnés par la classe quand un élève réussit le premier
     xp: {
-        defi: 15,           // réussir le défi de la semaine
-        defiSansIndice: 5,  // bonus si réussi sans avoir ouvert l'indice
-        fidelite: 5         // revenir un jour de plus d'affilée
+        defiJour: 15,             // défi du jour
+        defiJourSansIndice: 5,    // bonus si trouvé sans ouvrir l'indice
+        defiSemaine: 30,          // défi de la semaine (plus corsé)
+        defiSemaineSansIndice: 10 // bonus sans indice
     }
 };

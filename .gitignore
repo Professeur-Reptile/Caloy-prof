@@ -11,3 +11,6 @@ Thumbs.db
 
 # Logs
 *.log
+
+# Points de classe des défis (géré par le serveur, ne pas versionner)
+defis-data.json

@@ -32,7 +32,7 @@
             <div class="xp-panel">
                 <div class="xp-level" id="xp-level">🐣 Débutant</div>
                 <div class="xp-bar"><div class="xp-bar-fill" id="xp-fill"></div></div>
-                <div class="xp-count"><span id="xp-value">0</span> XP<span id="xp-pop-zone"></span></div>
+                <div class="xp-count"><span id="xp-value">0</span> XP de la classe<span id="xp-pop-zone"></span></div>
                 <div class="streak" id="streak">🔥 0 jour</div>
             </div>
 
@@ -65,9 +65,14 @@
                 <div class="countdown" id="countdown"></div>
             </div>
 
-            <div class="card">
-                <h2>🧠 Défi de la semaine <span class="xp-tag" id="defi-xp-tag"></span></h2>
-                <div id="defi"></div>
+            <div class="card hidden" id="defi-jour-card">
+                <h2>🗓️ Défi du jour <span class="xp-tag" id="defi-jour-xp-tag"></span></h2>
+                <div id="defi-jour"></div>
+            </div>
+
+            <div class="card span-2 hidden" id="defi-semaine-card">
+                <h2>🧠 Défi de la semaine <span class="xp-tag" id="defi-semaine-xp-tag"></span></h2>
+                <div id="defi-semaine"></div>
             </div>
 
             <div class="card span-2" id="outils-card">
