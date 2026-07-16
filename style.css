@@ -302,16 +302,16 @@ body {
     50% { opacity: 0.45; }
 }
 
-.feu-pct {
-    font-size: 1.6em;
-    font-weight: 800;
-    white-space: nowrap;
+.feu-emoji {
+    font-size: 2.2em;
+    line-height: 1;
 }
 
 .feu-label {
-    margin-top: 4px;
+    margin-top: 8px;
     color: var(--text-dim);
     font-weight: 600;
+    font-size: 1.05em;
 }
 
 .feu-msg {

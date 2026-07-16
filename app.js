@@ -162,21 +162,23 @@ function renderCountdown(classe) {
 }
 
 // ---- Feu tricolore du comportement ----
+const FEU_ETATS = {
+    vert:   { emoji: '😄', label: 'Feu vert — tout roule !' },
+    orange: { emoji: '😬', label: 'Feu orange — on se ressaisit !' },
+    rouge:  { emoji: '🚨', label: 'Feu rouge — stop, on se reprend.' }
+};
+
 function renderComportement(classe) {
     const carte = document.getElementById('comportement-card');
     const compo = classe.comportement;
-    if (!compo || compo.niveau === null || compo.niveau === undefined) {
+    const couleur = compo && String(compo.couleur || '').toLowerCase();
+    if (!FEU_ETATS[couleur]) {
         carte.classList.add('hidden');
         return;
     }
     carte.classList.remove('hidden');
 
-    const niveau = Math.max(0, Math.min(100, compo.niveau));
-    let couleur, emoji, label;
-    if (niveau >= 70)      { couleur = 'vert';   emoji = niveau >= 90 ? '🤩' : '😄'; label = 'Feu vert — tout roule !'; }
-    else if (niveau >= 40) { couleur = 'orange'; emoji = '😬'; label = 'Feu orange — on se ressaisit !'; }
-    else                   { couleur = 'rouge';  emoji = '🚨'; label = 'Feu rouge — stop, on se reprend.'; }
-
+    const etat = FEU_ETATS[couleur];
     document.getElementById('feu-zone').innerHTML =
         '<div class="feu-ligne">' +
             '<div class="feu ' + couleur + '">' +
@@ -185,8 +187,8 @@ function renderComportement(classe) {
                 '<div class="feu-lampe verte"></div>' +
             '</div>' +
             '<div class="feu-info">' +
-                '<div class="feu-pct">' + emoji + ' ' + niveau + '%</div>' +
-                '<div class="feu-label">' + label + '</div>' +
+                '<div class="feu-emoji">' + etat.emoji + '</div>' +
+                '<div class="feu-label">' + etat.label + '</div>' +
             '</div>' +
         '</div>' +
         (compo.message ? '<p class="feu-msg">💬 ' + compo.message + '</p>' : '');

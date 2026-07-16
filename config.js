@@ -31,10 +31,9 @@ const CONFIG = {
     //   • devoirs       : le travail à faire, avec la date de rendu
     //   • prochaineEval : date au format "AAAA-MM-JJ" ("" si rien de prévu)
     //   • comportement  : le feu tricolore de la classe !
-    //                     niveau de 0 à 100 : vert à partir de 70,
-    //                     orange à partir de 40, rouge en dessous,
+    //                     couleur : "vert", "orange" ou "rouge",
     //                     message optionnel ("" pour ne rien afficher),
-    //                     mettez niveau: null pour masquer la carte
+    //                     mettez couleur: "" pour masquer la carte
     //   • defi          : le défi de la semaine
     //       - id : UNIQUE, à changer à chaque nouveau défi (sinon pas
     //         de nouveaux XP !)
@@ -67,7 +66,7 @@ const CONFIG = {
             ],
             prochaineEval: { date: "2026-07-24", titre: "Éval — Théorème de Pythagore" },
             comportement: {
-                niveau: 85,
+                couleur: "vert",
                 message: "Très bonne semaine, classe agréable — continuez comme ça !"
             },
             defi: {
@@ -96,7 +95,7 @@ const CONFIG = {
             ],
             prochaineEval: { date: "2026-07-28", titre: "Éval — Calcul littéral" },
             comportement: {
-                niveau: 55,
+                couleur: "orange",
                 message: "Trop de bavardages cette semaine… je sais que vous pouvez repasser au vert. 🚦"
             },
             defi: {
@@ -126,7 +125,7 @@ const CONFIG = {
             ],
             prochaineEval: { date: "2026-07-27", titre: "Éval — Théorème de Pythagore" },
             comportement: {
-                niveau: 75,
+                couleur: "vert",
                 message: ""
             },
             defi: {
@@ -157,7 +156,7 @@ const CONFIG = {
             ],
             prochaineEval: { date: "2026-07-24", titre: "Éval — Trigonométrie (cos, sin, tan)" },
             comportement: {
-                niveau: 90,
+                couleur: "vert",
                 message: "Classe au top, un plaisir de vous faire cours. 👏"
             },
             defi: {
@@ -187,7 +186,7 @@ const CONFIG = {
             ],
             prochaineEval: { date: "2026-07-30", titre: "Éval — Théorème de Thalès" },
             comportement: {
-                niveau: 40,
+                couleur: "orange",
                 message: "Feu orange : trop d'agitation. On repart du bon pied lundi, je compte sur vous."
             },
             defi: {
