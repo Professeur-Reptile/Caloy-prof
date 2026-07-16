@@ -30,6 +30,10 @@ const CONFIG = {
     //   • annonces      : vos messages, le plus récent EN PREMIER
     //   • devoirs       : le travail à faire, avec la date de rendu
     //   • prochaineEval : date au format "AAAA-MM-JJ" ("" si rien de prévu)
+    //   • comportement  : la batterie de comportement de la classe !
+    //                     niveau de 0 (vide 🚨) à 100 (pleine 🤩),
+    //                     message optionnel ("" pour ne rien afficher),
+    //                     mettez niveau: null pour masquer la carte
     //   • defi          : le défi de la semaine (id UNIQUE à changer à
     //                     chaque nouveau défi, sinon pas de nouveaux XP !)
 
@@ -54,6 +58,10 @@ const CONFIG = {
                 { pour: "jeudi 23/07", texte: "Apprendre la démonstration du théorème vue en classe" }
             ],
             prochaineEval: { date: "2026-07-24", titre: "Éval — Théorème de Pythagore" },
+            comportement: {
+                niveau: 85,
+                message: "Très bonne semaine, classe agréable — continuez comme ça !"
+            },
             defi: {
                 id: "4A-2026-s38",
                 question: "Un écran de télé mesure 80 cm de large et 60 cm de haut. Quelle est la longueur de sa diagonale ?",
@@ -78,6 +86,10 @@ const CONFIG = {
                 { pour: "mardi 21/07", texte: "Exercices 12 et 14 p. 98 (réduire les expressions)" }
             ],
             prochaineEval: { date: "2026-07-28", titre: "Éval — Calcul littéral" },
+            comportement: {
+                niveau: 55,
+                message: "Trop de bavardages cette semaine… je sais que vous pouvez recharger la batterie. 🔌"
+            },
             defi: {
                 id: "4B-2026-s38",
                 question: "Je pense à un nombre. Je le double, j'ajoute 5, et j'obtiens 17. Écris le calcul « à l'envers » et trouve mon nombre.",
@@ -103,6 +115,10 @@ const CONFIG = {
                 { pour: "lundi 20/07", texte: "DM n°5 à rendre (feuille distribuée en classe)" }
             ],
             prochaineEval: { date: "2026-07-27", titre: "Éval — Théorème de Pythagore" },
+            comportement: {
+                niveau: 75,
+                message: ""
+            },
             defi: {
                 id: "4C-2026-s38",
                 question: "Un écran de télé mesure 80 cm de large et 60 cm de haut. Quelle est la longueur de sa diagonale ?",
@@ -129,6 +145,10 @@ const CONFIG = {
                 { pour: "mardi 21/07", texte: "Exercices 8 et 9 p. 203 (calculer un angle avec la calculatrice)" }
             ],
             prochaineEval: { date: "2026-07-24", titre: "Éval — Trigonométrie (cos, sin, tan)" },
+            comportement: {
+                niveau: 90,
+                message: "Classe au top, un plaisir de vous faire cours. 👏"
+            },
             defi: {
                 id: "3A-2026-s38",
                 question: "Un skateur descend une rampe de 4 m qui fait un angle de 30° avec le sol. De quelle hauteur part-il ?",
@@ -154,6 +174,10 @@ const CONFIG = {
                 { pour: "jeudi 23/07", texte: "Préparer les questions sur le cours pour la séance de révisions" }
             ],
             prochaineEval: { date: "2026-07-30", titre: "Éval — Théorème de Thalès" },
+            comportement: {
+                niveau: 40,
+                message: "Batterie faible : trop d'agitation. On repart du bon pied lundi, je compte sur vous."
+            },
             defi: {
                 id: "3B-2026-s38",
                 question: "Pour mesurer la hauteur d'un arbre, Léa plante un bâton d'1 m qui fait une ombre de 60 cm. Au même moment, l'ombre de l'arbre mesure 4,20 m. Quelle est la hauteur de l'arbre ?",
