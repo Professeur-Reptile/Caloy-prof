@@ -211,10 +211,15 @@ function renderComportement(classe) {
 }
 
 // ---- Défis du jour et de la semaine ----
-// Les défis sont définis PAR NIVEAU (4e / 3e) dans CONFIG.defis, avec
-// une date de début : le site choisit automatiquement le défi du jour
-// et celui de la semaine en cours. Le premier élève de la classe qui
-// trouve fait marquer les points à sa classe (une seule fois par défi).
+// Deux pools de défis partagés par toutes les classes (CONFIG.defisJour
+// et CONFIG.defisSemaine), mais DÉCALÉS par une rotation : jamais deux
+// classes sur le même défi en même temps.
+//   • défi du jour  : la classe n° i reçoit le jour ouvré n° j le défi
+//                     (i + j) % 10 — le week-end garde celui du vendredi
+//   • défi semaine  : la classe n° i reçoit la semaine n° w le défi
+//                     (i + w) % 5 — permutation chaque lundi
+// Le premier élève de la classe qui trouve fait marquer les points à sa
+// classe (une seule fois par défi, géré par defis.php).
 //
 // États possibles d'un défi (localStorage 'mc-defis') :
 //   "reussi"        → validé après avoir vu l'indice
@@ -246,33 +251,58 @@ function normaliser(txt) {
     return String(txt).toLowerCase().replace(/,/g, '.').replace(/\s+/g, '');
 }
 
-function aujourdhuiISO() {
-    const d = new Date();
+function dateISO(d) {
     return d.getFullYear() + '-' +
         String(d.getMonth() + 1).padStart(2, '0') + '-' +
         String(d.getDate()).padStart(2, '0');
 }
 
-// Le défi affiché = celui dont la date de début est la plus récente
-// parmi celles déjà passées (le vendredi reste affiché le week-end).
-function defiActuel(liste) {
-    if (!liste) return null;
-    const ajd = aujourdhuiISO();
-    let choisi = null;
-    for (const d of liste) {
-        if (d.debut && d.debut <= ajd && (!choisi || d.debut > choisi.debut)) choisi = d;
+// Le week-end, on garde le défi du vendredi
+function dernierJourOuvre() {
+    const d = new Date();
+    if (d.getDay() === 6) d.setDate(d.getDate() - 1);      // samedi → vendredi
+    else if (d.getDay() === 0) d.setDate(d.getDate() - 2); // dimanche → vendredi
+    return d;
+}
+
+// Nombre de jours ouvrés (lun-ven) écoulés entre defisDebut et d (exclu)
+function joursOuvresDepuis(debutISO, d) {
+    const cur = new Date(debutISO + 'T00:00:00');
+    const cible = dateISO(d);
+    let n = 0;
+    while (dateISO(cur) < cible) {
+        if (cur.getDay() !== 0 && cur.getDay() !== 6) n++;
+        cur.setDate(cur.getDate() + 1);
     }
-    return choisi;
+    return n;
 }
 
-function defiDe(type, classe) {
-    const groupe = CONFIG.defis && CONFIG.defis[classe.niveau];
-    if (!groupe) return null;
-    return defiActuel(type === 'jour' ? groupe.jour : groupe.semaine);
+function indexClasse(code) {
+    return Object.keys(CONFIG.classes).indexOf(code);
 }
 
-function defiId(type, niveau, defi) {
-    return type + ':' + niveau + ':' + defi.debut;
+// Retourne { defi, id } pour la classe, ou null si pas de défi
+function defiPour(type, code) {
+    if (!CONFIG.defisDebut) return null;
+    if (type === 'jour') {
+        const pool = CONFIG.defisJour || [];
+        if (!pool.length) return null;
+        const d = dernierJourOuvre();
+        if (dateISO(d) < CONFIG.defisDebut) return null;
+        const j = joursOuvresDepuis(CONFIG.defisDebut, d);
+        const k = (indexClasse(code) + j) % pool.length;
+        return { defi: pool[k], id: 'jour:' + dateISO(d) + ':' + k };
+    }
+    const pool = CONFIG.defisSemaine || [];
+    if (!pool.length) return null;
+    const debut = new Date(CONFIG.defisDebut + 'T00:00:00');
+    const ajd = new Date();
+    if (dateISO(ajd) < CONFIG.defisDebut) return null;
+    const w = Math.floor((ajd - debut) / (7 * 86400000));
+    const k = (indexClasse(code) + w) % pool.length;
+    const lundi = new Date(debut);
+    lundi.setDate(lundi.getDate() + w * 7);
+    return { defi: pool[k], id: 'semaine:' + dateISO(lundi) + ':' + k };
 }
 
 function pointsDefi(type, sansIndice) {
@@ -289,20 +319,21 @@ function renderDefis(classe) {
 function renderDefiCarte(type, classe) {
     const carte = document.getElementById('defi-' + type + '-card');
     const zone = document.getElementById('defi-' + type);
-    const defi = defiDe(type, classe);
+    const info = defiPour(type, getClasse());
 
-    if (!defi || !defi.question) {
+    if (!info || !info.defi.question) {
         carte.classList.add('hidden');
         return;
     }
     carte.classList.remove('hidden');
+    const defi = info.defi;
 
     const base = type === 'jour' ? CONFIG.xp.defiJour : CONFIG.xp.defiSemaine;
     const bonus = type === 'jour' ? CONFIG.xp.defiJourSansIndice : CONFIG.xp.defiSemaineSansIndice;
     const tag = document.getElementById('defi-' + type + '-xp-tag');
     if (tag) tag.textContent = '+' + base + ' XP' + (bonus ? ' (+' + bonus + ' sans indice)' : '');
 
-    const id = defiId(type, classe.niveau, defi);
+    const id = info.id;
     const etat = etatDefi(id);
     const marque = (MARQUES[getClasse()] || []).indexOf(id) !== -1;
 
@@ -343,7 +374,7 @@ function renderDefiCarte(type, classe) {
 function validerDefi(type) {
     const code = getClasse();
     const classe = CONFIG.classes[code];
-    const defi = defiDe(type, classe);
+    const info = defiPour(type, code);
     const input = document.getElementById('defi-input-' + type);
     const feedback = document.getElementById('defi-feedback-' + type);
     const essai = normaliser(input.value);
@@ -353,8 +384,8 @@ function validerDefi(type) {
         return;
     }
 
-    const correct = (defi.bonnesReponses || []).some(function(r) { return normaliser(r) === essai; });
-    const id = defiId(type, classe.niveau, defi);
+    const correct = (info.defi.bonnesReponses || []).some(function(r) { return normaliser(r) === essai; });
+    const id = info.id;
 
     if (correct) {
         const sansIndice = !indicesVus()[id];
@@ -400,9 +431,8 @@ async function marquerPourLaClasse(code, id, points, type) {
 }
 
 function montrerIndice(type) {
-    const classe = CONFIG.classes[getClasse()];
-    const defi = defiDe(type, classe);
-    const id = defiId(type, classe.niveau, defi);
+    const info = defiPour(type, getClasse());
+    const id = info.id;
     const m = indicesVus();
     if (!m[id]) {
         m[id] = true;
@@ -420,10 +450,9 @@ function revelerReponse(type) {
         btn.textContent = '⚠️ Sûr·e ? (0 XP)';
         return;
     }
-    const classe = CONFIG.classes[getClasse()];
-    const defi = defiDe(type, classe);
-    setEtatDefi(defiId(type, classe.niveau, defi), 'vu');
-    renderDefiCarte(type, classe);
+    const code = getClasse();
+    setEtatDefi(defiPour(type, code).id, 'vu');
+    renderDefiCarte(type, CONFIG.classes[code]);
 }
 
 // ---- Boîte à outils ----
