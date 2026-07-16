@@ -14,6 +14,10 @@
 header('Content-Type: application/json');
 header('Access-Control-Allow-Origin: *');
 
+// Une seule horloge officielle pour tout le monde : celle du serveur,
+// à l'heure française (le site l'utilise pour la rotation des défis).
+date_default_timezone_set('Europe/Paris');
+
 $fichier = 'defis-data.json';
 $fp = fopen($fichier, 'c+');
 flock($fp, LOCK_EX); // évite les écritures simultanées (2 élèves en même temps)
@@ -50,6 +54,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     }
 } else {
     echo json_encode([
+        'date'    => date('Y-m-d'),
         'totaux'  => (object)$data['totaux'],
         'marques' => (object)$data['marques']
     ]);
