@@ -52,13 +52,16 @@ const CONFIG = {
             chapitresTermines: [
                 "Nombres relatifs",
                 "Écritures fractionnaires",
+                "Triangles et droites remarquables",
                 "Puissances",
+                "Proportionnalité et pourcentages",
                 "Calcul littéral"
             ],
             enCeMoment: "Théorème de Pythagore",
             annonces: [
                 { date: "15/07", texte: "La correction de l'éval sur le calcul littéral est en ligne — regarde-la avant jeudi, on en reparle en classe. ✅" },
-                { date: "10/07", texte: "Bravo pour l'éval : la moyenne de la classe est en hausse ! Continuez comme ça. 📈" }
+                { date: "10/07", texte: "Bravo pour l'éval : la moyenne de la classe est en hausse ! Continuez comme ça. 📈" },
+                { date: "03/07", texte: "Le défi de la semaine dernière a été réussi par 19 élèves sur 26 — record battu ! 🏆" }
             ],
             devoirs: [
                 { pour: "lundi 20/07", texte: "Exercices 4 et 7 p. 152 (calculer l'hypoténuse)" },
@@ -70,7 +73,7 @@ const CONFIG = {
                 message: "Très bonne semaine, classe agréable — continuez comme ça !"
             },
             defi: {
-                id: "4A-2026-s38",
+                id: "4A-2026-s29",
                 question: "Un écran de télé mesure 80 cm de large et 60 cm de haut. Quelle est la longueur de sa diagonale ?",
                 indice: "La diagonale coupe l'écran en deux triangles rectangles… Pythagore peut t'aider !",
                 bonnesReponses: ["100", "100cm", "1m"],
@@ -84,22 +87,26 @@ const CONFIG = {
             chapitresTermines: [
                 "Nombres relatifs",
                 "Écritures fractionnaires",
-                "Puissances"
+                "Triangles et droites remarquables",
+                "Puissances",
+                "Proportionnalité et pourcentages"
             ],
             enCeMoment: "Calcul littéral",
             annonces: [
-                { date: "13/07", texte: "N'oubliez pas vos calculatrices jeudi, on fera une activité notée dessus. 🧮" }
+                { date: "13/07", texte: "N'oubliez pas vos calculatrices jeudi, on fera une activité notée dessus. 🧮" },
+                { date: "07/07", texte: "Les cahiers d'exercices seront ramassés lundi : vérifiez que tout est à jour. 📓" }
             ],
             devoirs: [
-                { pour: "mardi 21/07", texte: "Exercices 12 et 14 p. 98 (réduire les expressions)" }
+                { pour: "mardi 21/07", texte: "Exercices 12 et 14 p. 98 (réduire les expressions)" },
+                { pour: "vendredi 24/07", texte: "Finir la fiche « développer avec la distributivité » distribuée en classe" }
             ],
             prochaineEval: { date: "2026-07-28", titre: "Éval — Calcul littéral" },
             comportement: {
-                couleur: "orange",
-                message: "Trop de bavardages cette semaine… je sais que vous pouvez repasser au vert. 🚦"
+                couleur: "rouge",
+                message: "Séance de mardi très agitée : feu rouge. On en parle lundi, et je sais que vous pouvez repasser au vert très vite. 🚦"
             },
             defi: {
-                id: "4B-2026-s38",
+                id: "4B-2026-s29",
                 question: "Je pense à un nombre. Je le double, j'ajoute 5, et j'obtiens 17. Écris le calcul « à l'envers » et trouve mon nombre.",
                 indice: "Pars de 17 : enlève 5, puis partage en deux…",
                 bonnesReponses: ["6"],
@@ -113,23 +120,27 @@ const CONFIG = {
             chapitresTermines: [
                 "Nombres relatifs",
                 "Écritures fractionnaires",
+                "Triangles et droites remarquables",
                 "Puissances",
+                "Proportionnalité et pourcentages",
                 "Calcul littéral"
             ],
             enCeMoment: "Théorème de Pythagore",
             annonces: [
-                { date: "16/07", texte: "Le DM sur les puissances est rendu : correction distribuée lundi. Pensez à le faire signer. ✍️" }
+                { date: "16/07", texte: "Le DM sur les puissances est rendu : correction distribuée lundi. Pensez à le faire signer. ✍️" },
+                { date: "09/07", texte: "Séance en salle info vendredi : on découvrira Pythagore avec GeoGebra. 💻" }
             ],
             devoirs: [
-                { pour: "lundi 20/07", texte: "DM n°5 à rendre (feuille distribuée en classe)" }
+                { pour: "lundi 20/07", texte: "DM n°5 à rendre (feuille distribuée en classe)" },
+                { pour: "jeudi 23/07", texte: "Exercices 2 et 3 p. 149 (reconnaître un triangle rectangle)" }
             ],
             prochaineEval: { date: "2026-07-27", titre: "Éval — Théorème de Pythagore" },
             comportement: {
-                couleur: "vert",
-                message: ""
+                couleur: "orange",
+                message: "Bon travail, mais trop de retards de matériel cette semaine : pensez à vos affaires !"
             },
             defi: {
-                id: "4C-2026-s38",
+                id: "4C-2026-s29",
                 question: "Un écran de télé mesure 80 cm de large et 60 cm de haut. Quelle est la longueur de sa diagonale ?",
                 indice: "La diagonale coupe l'écran en deux triangles rectangles… Pythagore peut t'aider !",
                 bonnesReponses: ["100", "100cm", "1m"],
@@ -143,16 +154,20 @@ const CONFIG = {
             chapitresTermines: [
                 "Arithmétique et nombres premiers",
                 "Calcul littéral et identités remarquables",
+                "Fonctions : notion et images",
                 "Équations",
+                "Statistiques",
                 "Théorème de Thalès"
             ],
             enCeMoment: "Trigonométrie",
             annonces: [
                 { date: "15/07", texte: "Les vidéos du cours de trigonométrie sont disponibles — parfait pour réviser avant l'éval de vendredi. 🎬" },
-                { date: "08/07", texte: "Brevet blanc : les dates sont fixées, on commencera les révisions après ce chapitre. 🎯" }
+                { date: "08/07", texte: "Brevet blanc : les dates sont fixées, on commencera les révisions après ce chapitre. 🎯" },
+                { date: "01/07", texte: "Les sujets de brevet des années précédentes sont dans la boîte à outils : commencez à vous entraîner ! 📄" }
             ],
             devoirs: [
-                { pour: "mardi 21/07", texte: "Exercices 8 et 9 p. 203 (calculer un angle avec la calculatrice)" }
+                { pour: "mardi 21/07", texte: "Exercices 8 et 9 p. 203 (calculer un angle avec la calculatrice)" },
+                { pour: "jeudi 23/07", texte: "Fiche de révision trigo : refaire les 3 exemples du cours" }
             ],
             prochaineEval: { date: "2026-07-24", titre: "Éval — Trigonométrie (cos, sin, tan)" },
             comportement: {
@@ -160,7 +175,7 @@ const CONFIG = {
                 message: "Classe au top, un plaisir de vous faire cours. 👏"
             },
             defi: {
-                id: "3A-2026-s38",
+                id: "3A-2026-s29",
                 question: "Un skateur descend une rampe de 4 m qui fait un angle de 30° avec le sol. De quelle hauteur part-il ?",
                 indice: "Fais un schéma : la rampe est l'hypoténuse, la hauteur est le côté opposé à l'angle… sin ou cos ?",
                 bonnesReponses: ["2", "2m", "200cm"],
@@ -174,11 +189,14 @@ const CONFIG = {
             chapitresTermines: [
                 "Arithmétique et nombres premiers",
                 "Calcul littéral et identités remarquables",
-                "Équations"
+                "Fonctions : notion et images",
+                "Équations",
+                "Statistiques"
             ],
             enCeMoment: "Théorème de Thalès",
             annonces: [
-                { date: "14/07", texte: "Rappel : ceux qui n'ont pas rendu le DM n°6, dernier délai lundi ! ⏰" }
+                { date: "14/07", texte: "Rappel : ceux qui n'ont pas rendu le DM n°6, dernier délai lundi ! ⏰" },
+                { date: "06/07", texte: "Brevet blanc : les dates sont fixées, pensez à les noter dans l'agenda. 🎯" }
             ],
             devoirs: [
                 { pour: "lundi 20/07", texte: "Exercices 5 et 6 p. 187 (configuration de Thalès)" },
@@ -190,7 +208,7 @@ const CONFIG = {
                 message: "Feu orange : trop d'agitation. On repart du bon pied lundi, je compte sur vous."
             },
             defi: {
-                id: "3B-2026-s38",
+                id: "3B-2026-s29",
                 question: "Pour mesurer la hauteur d'un arbre, Léa plante un bâton d'1 m qui fait une ombre de 60 cm. Au même moment, l'ombre de l'arbre mesure 4,20 m. Quelle est la hauteur de l'arbre ?",
                 indice: "Les rayons du soleil sont parallèles… deux triangles, une même proportion : c'est Thalès !",
                 bonnesReponses: ["7", "7m", "700cm"],
