@@ -35,8 +35,8 @@ const CONFIG = {
     //                     message optionnel ("" pour ne rien afficher),
     //                     mettez couleur: "" pour masquer la carte
     //
-    // Les DÉFIS ne sont plus dans les classes : voir CONFIG.defis
-    // plus bas (défi du jour + défi de la semaine, par niveau).
+    // Les DÉFIS ne sont plus dans les classes : voir defisJour /
+    // defisSemaine plus bas (pools partagés avec rotation automatique).
 
     classes: {
 
@@ -177,136 +177,124 @@ const CONFIG = {
     },
 
     // ---- Défis ------------------------------------------------------
-    // Les défis sont définis PAR NIVEAU (les 4e ont les mêmes défis,
-    // les 3e aussi) et PROGRAMMÉS À L'AVANCE : chaque défi a une date
-    // de début "AAAA-MM-JJ", le site affiche automatiquement le plus
-    // récent déjà commencé. Vous pouvez donc préparer des semaines
-    // entières d'avance.
+    // Deux POOLS de défis partagés par toutes les classes (4e et 3e :
+    // choisissez des questions faisables par tous !) avec une ROTATION
+    // automatique pour que deux classes n'aient jamais le même défi en
+    // même temps :
     //
-    //   • jour    : un défi rapide par jour de classe
-    //   • semaine : un défi plus corsé qui reste toute la semaine
+    //   • defisJour    : 10 défis → chaque jour de classe (lun-ven),
+    //     chaque classe reçoit un défi différent du pool ; le lendemain
+    //     tout décale d'un cran. En 2 semaines, chaque classe fait les
+    //     10 défis, puis ça reboucle (pensez à renouveler le pool !).
+    //     Le week-end, le défi du vendredi reste affiché.
+    //   • defisSemaine : 5 défis (un par classe) → chaque lundi, les
+    //     défis permutent entre les 5 classes. En 5 semaines, chaque
+    //     classe les a tous faits.
+    //   • defisDebut   : le LUNDI où démarre la rotation ("AAAA-MM-JJ").
     //
     // Les points vont à la CLASSE : le premier élève de la classe qui
     // trouve fait marquer sa classe, une seule fois par défi (géré par
     // defis.php sur le serveur).
     //
     // bonnesReponses : les réponses acceptées (majuscules, espaces et
-    // virgules/points ignorés à la correction ; listez plusieurs
-    // formes : ["100", "100cm", "1m"]).
-    defis: {
+    // virgules/points ignorés ; listez plusieurs formes : ["1/2", "0,5"]).
+    defisDebut: "2026-07-13",
 
-        "4e": {
-            jour: [
-                {
-                    debut: "2026-07-13",
-                    question: "Calcule : (−3) + (−9) − (−5)",
-                    indice: "Soustraire (−5), c'est ajouter 5…",
-                    bonnesReponses: ["-7", "−7"],
-                    reponse: "<strong>−7</strong> — (−3) + (−9) = −12, puis −12 + 5 = −7."
-                },
-                {
-                    debut: "2026-07-14",
-                    question: "Quel est le double de 3/4 ? (fraction ou décimal)",
-                    indice: "Doubler une fraction, c'est doubler son numérateur…",
-                    bonnesReponses: ["3/2", "1.5", "6/4", "1,5"],
-                    reponse: "<strong>3/2 (= 1,5)</strong> — 2 × 3/4 = 6/4 = 3/2."
-                },
-                {
-                    debut: "2026-07-15",
-                    question: "2⁵ = ?",
-                    indice: "2 × 2 × 2 × 2 × 2, étape par étape…",
-                    bonnesReponses: ["32"],
-                    reponse: "<strong>32</strong> — 2⁵ = 2×2×2×2×2 = 32."
-                },
-                {
-                    debut: "2026-07-16",
-                    question: "Simplifie : 5x + 3x − 2x (réponse du type « 4x »)",
-                    indice: "Compte les x comme des objets : 5 objets + 3 objets − 2 objets…",
-                    bonnesReponses: ["6x"],
-                    reponse: "<strong>6x</strong> — (5 + 3 − 2)x = 6x."
-                },
-                {
-                    debut: "2026-07-17",
-                    question: "Un article à 40 € est soldé à −25 %. Quel est le nouveau prix (en €) ?",
-                    indice: "25 %, c'est un quart…",
-                    bonnesReponses: ["30", "30€", "30euros"],
-                    reponse: "<strong>30 €</strong> — 25 % de 40 = 10, donc 40 − 10 = 30."
-                }
-            ],
-            semaine: [
-                {
-                    debut: "2026-07-13",
-                    question: "Quel est le plus petit nombre entier de TROIS chiffres divisible à la fois par 3 et par 4 ?",
-                    indice: "Divisible par 3 et par 4 = divisible par 12…",
-                    bonnesReponses: ["108"],
-                    reponse: "<strong>108</strong> — il faut un multiple de 12 : 12 × 9 = 108 est le premier à trois chiffres (96 n'en a que deux)."
-                },
-                {
-                    debut: "2026-07-20",
-                    question: "La somme de trois entiers consécutifs vaut 141. Quel est le plus petit des trois ?",
-                    indice: "Appelle le nombre du milieu n : la somme fait 3n…",
-                    bonnesReponses: ["46"],
-                    reponse: "<strong>46</strong> — 141 ÷ 3 = 47 (le milieu), donc 46 + 47 + 48 = 141."
-                }
-            ]
+    defisJour: [
+        {
+            question: "Calcule : (−5) + 8 − (−3)",
+            indice: "Soustraire (−3), c'est ajouter 3…",
+            bonnesReponses: ["6", "+6"],
+            reponse: "<strong>6</strong> — (−5) + 8 = 3, puis 3 + 3 = 6."
         },
-
-        "3e": {
-            jour: [
-                {
-                    debut: "2026-07-13",
-                    question: "84 = 2² × 3 × 7. Combien de facteurs premiers DIFFÉRENTS possède 84 ?",
-                    indice: "Compte les nombres premiers différents dans la décomposition…",
-                    bonnesReponses: ["3"],
-                    reponse: "<strong>3</strong> — les facteurs premiers de 84 sont 2, 3 et 7."
-                },
-                {
-                    debut: "2026-07-14",
-                    question: "f(x) = 3x − 5. Calcule f(4).",
-                    indice: "Remplace x par 4 dans la formule…",
-                    bonnesReponses: ["7"],
-                    reponse: "<strong>7</strong> — f(4) = 3 × 4 − 5 = 12 − 5 = 7."
-                },
-                {
-                    debut: "2026-07-15",
-                    question: "On développe (x + 3)². Quel est le coefficient devant x ?",
-                    indice: "(a + b)² = a² + 2ab + b²…",
-                    bonnesReponses: ["6"],
-                    reponse: "<strong>6</strong> — (x + 3)² = x² + 6x + 9."
-                },
-                {
-                    debut: "2026-07-16",
-                    question: "√81 + √16 = ?",
-                    indice: "Cherche les carrés parfaits…",
-                    bonnesReponses: ["13"],
-                    reponse: "<strong>13</strong> — √81 = 9 et √16 = 4, donc 9 + 4 = 13."
-                },
-                {
-                    debut: "2026-07-17",
-                    question: "cos(60°) = ? (fraction ou décimal)",
-                    indice: "C'est une des valeurs à connaître par cœur… entre 0 et 1.",
-                    bonnesReponses: ["0.5", "1/2", "0,5"],
-                    reponse: "<strong>1/2 (= 0,5)</strong> — une valeur remarquable à retenir : cos(60°) = sin(30°) = 0,5."
-                }
-            ],
-            semaine: [
-                {
-                    debut: "2026-07-13",
-                    question: "Une échelle de 5 m est posée contre un mur ; son pied est à 3 m du mur. À quelle hauteur (en m) touche-t-elle le mur ?",
-                    indice: "Mur, sol, échelle : un triangle rectangle… Pythagore !",
-                    bonnesReponses: ["4", "4m", "400cm"],
-                    reponse: "<strong>4 m</strong> — h² = 5² − 3² = 25 − 9 = 16, donc h = 4. Le fameux triangle 3-4-5 ! 🪜"
-                },
-                {
-                    debut: "2026-07-20",
-                    question: "Quel est le chiffre des unités de 7⁴⁵ ?",
-                    indice: "Regarde le dernier chiffre de 7¹, 7², 7³, 7⁴, 7⁵… un motif se répète !",
-                    bonnesReponses: ["7"],
-                    reponse: "<strong>7</strong> — les unités des puissances de 7 font 7, 9, 3, 1, 7, 9, 3, 1… (cycle de 4). 45 = 4 × 11 + 1, donc même unité que 7¹ : c'est 7."
-                }
-            ]
+        {
+            question: "Quelle est la moitié de 3/4 ? (fraction ou décimal)",
+            indice: "Prendre la moitié, c'est multiplier par 1/2…",
+            bonnesReponses: ["3/8", "0.375", "0,375"],
+            reponse: "<strong>3/8</strong> — 3/4 × 1/2 = 3/8 (= 0,375)."
+        },
+        {
+            question: "2⁵ = ?",
+            indice: "2 × 2 × 2 × 2 × 2, étape par étape…",
+            bonnesReponses: ["32"],
+            reponse: "<strong>32</strong> — 2⁵ = 2×2×2×2×2 = 32."
+        },
+        {
+            question: "Combien font 15 % de 60 ?",
+            indice: "10 % de 60, puis 5 % de 60… additionne !",
+            bonnesReponses: ["9"],
+            reponse: "<strong>9</strong> — 10 % de 60 = 6, 5 % de 60 = 3, donc 6 + 3 = 9."
+        },
+        {
+            question: "Simplifie : 5x + 3x − 2x (réponse du type « 4x »)",
+            indice: "Compte les x comme des objets : 5 + 3 − 2…",
+            bonnesReponses: ["6x"],
+            reponse: "<strong>6x</strong> — (5 + 3 − 2)x = 6x."
+        },
+        {
+            question: "Quel est le plus petit nombre premier plus grand que 20 ?",
+            indice: "21 = 3 × 7, 22 = 2 × 11…",
+            bonnesReponses: ["23"],
+            reponse: "<strong>23</strong> — 21 et 22 se divisent, 23 n'est divisible que par 1 et lui-même."
+        },
+        {
+            question: "Un triangle a deux angles de 35° et 65°. Combien mesure le troisième ?",
+            indice: "La somme des angles d'un triangle fait 180°…",
+            bonnesReponses: ["80", "80°", "80degres", "80degrés"],
+            reponse: "<strong>80°</strong> — 180 − 35 − 65 = 80."
+        },
+        {
+            question: "1/2 + 1/4 = ? (fraction ou décimal)",
+            indice: "Mets tout sur le même dénominateur : des quarts…",
+            bonnesReponses: ["3/4", "0.75", "0,75", "6/8"],
+            reponse: "<strong>3/4</strong> — 1/2 = 2/4, donc 2/4 + 1/4 = 3/4 (= 0,75)."
+        },
+        {
+            question: "Le périmètre d'un carré est 36 cm. Quelle est son aire (en cm²) ?",
+            indice: "Trouve d'abord la longueur d'un côté…",
+            bonnesReponses: ["81", "81cm2", "81cm²"],
+            reponse: "<strong>81 cm²</strong> — côté = 36 ÷ 4 = 9, aire = 9 × 9 = 81."
+        },
+        {
+            question: "J'achète 3 cahiers à 2,50 € pièce et je paie avec un billet de 10 €. Combien me rend-on (en €) ?",
+            indice: "Calcule d'abord le prix des 3 cahiers…",
+            bonnesReponses: ["2.5", "2,5", "2.50", "2€50", "2.5€", "2.50€"],
+            reponse: "<strong>2,50 €</strong> — 3 × 2,50 = 7,50, et 10 − 7,50 = 2,50."
         }
-    },
+    ],
+
+    defisSemaine: [
+        {
+            question: "Quel est le plus petit nombre entier de TROIS chiffres divisible à la fois par 3 et par 4 ?",
+            indice: "Divisible par 3 et par 4 = divisible par 12…",
+            bonnesReponses: ["108"],
+            reponse: "<strong>108</strong> — il faut un multiple de 12 : 12 × 9 = 108 est le premier à trois chiffres (96 n'en a que deux)."
+        },
+        {
+            question: "La somme de trois entiers consécutifs vaut 141. Quel est le plus petit des trois ?",
+            indice: "Appelle le nombre du milieu n : la somme fait 3n…",
+            bonnesReponses: ["46"],
+            reponse: "<strong>46</strong> — 141 ÷ 3 = 47 (le milieu), donc 46 + 47 + 48 = 141."
+        },
+        {
+            question: "Quel est le chiffre des unités de 7⁴⁵ ?",
+            indice: "Regarde le dernier chiffre de 7¹, 7², 7³, 7⁴, 7⁵… un motif se répète !",
+            bonnesReponses: ["7"],
+            reponse: "<strong>7</strong> — les unités des puissances de 7 font 7, 9, 3, 1, 7, 9, 3, 1… (cycle de 4). 45 = 4 × 11 + 1, donc même unité que 7¹ : c'est 7."
+        },
+        {
+            question: "Dans un groupe de 10 personnes, chacun serre la main de tous les autres une seule fois. Combien de poignées de main en tout ?",
+            indice: "La 1re personne en serre 9, la 2e n'en a plus que 8 de nouvelles…",
+            bonnesReponses: ["45"],
+            reponse: "<strong>45</strong> — 9 + 8 + 7 + … + 1 = 45 (ou 10 × 9 ÷ 2)."
+        },
+        {
+            question: "Un nénuphar double de surface chaque jour. Il recouvre tout l'étang en 30 jours. En combien de jours en recouvrait-il la MOITIÉ ?",
+            indice: "Pars de la fin : la veille du jour 30, il était deux fois plus petit…",
+            bonnesReponses: ["29", "29jours", "29j"],
+            reponse: "<strong>29 jours</strong> — s'il double chaque jour, la moitié de l'étang c'est juste la veille de la fin. Pas 15 ! 🪷"
+        }
+    ],
 
     // ---- Boîte à outils --------------------------------------------
     // Liens utiles affichés pour toutes les classes. Ajoutez, retirez,
