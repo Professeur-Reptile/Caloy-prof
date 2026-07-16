@@ -84,6 +84,39 @@ function renderNow(classe) {
     }
 }
 
+function renderChapitres(classe) {
+    const carte = document.getElementById('chapitres-card');
+    const zone = document.getElementById('chapitres');
+    const termines = classe.chapitresTermines || [];
+    if (termines.length === 0 && !classe.enCeMoment) {
+        carte.classList.add('hidden');
+        return;
+    }
+    carte.classList.remove('hidden');
+
+    let html = termines.map(function(titre, i) {
+        return '<div class="chapitre done">' +
+            '<div class="chapitre-badge">✓</div>' +
+            '<div class="chapitre-titre">' + titre + '</div>' +
+        '</div>';
+    }).join('');
+
+    if (classe.enCeMoment) {
+        html += '<div class="chapitre current">' +
+            '<div class="chapitre-badge">📍</div>' +
+            '<div class="chapitre-titre">' + classe.enCeMoment +
+                ' <span class="chapitre-tag">en cours</span></div>' +
+        '</div>';
+    }
+
+    html += '<div class="chapitre next">' +
+        '<div class="chapitre-badge">?</div>' +
+        '<div class="chapitre-titre">La suite… mystère ! 👀</div>' +
+    '</div>';
+
+    zone.innerHTML = html;
+}
+
 function renderAnnonces(classe) {
     const zone = document.getElementById('annonces');
     if (!classe.annonces || classe.annonces.length === 0) {
@@ -243,6 +276,7 @@ function render() {
     document.getElementById('hero-classe').textContent = 'les ' + classe.nom;
     renderClassPicker(code);
     renderNow(classe);
+    renderChapitres(classe);
     renderAnnonces(classe);
     renderDevoirs(classe);
     renderCountdown(classe);
