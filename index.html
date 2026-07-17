@@ -9,7 +9,7 @@
     <!-- Le « ?v=… » force les navigateurs à recharger les fichiers
          après une mise à jour : pensez à changer le numéro quand vous
          modifiez config.js, app.js ou style.css ! -->
-    <link rel="stylesheet" href="style.css?v=2">
+    <link rel="stylesheet" href="style.css?v=3">
 </head>
 <body>
 
@@ -53,24 +53,14 @@
         </section>
 
         <div class="grid">
-            <div class="card span-2">
+            <div class="card">
                 <h2>📢 Quoi de neuf ?</h2>
                 <div id="annonces"></div>
             </div>
 
-            <div class="card span-2">
+            <div class="card">
                 <h2>📝 Pour la prochaine fois</h2>
                 <div id="devoirs"></div>
-            </div>
-
-            <div class="card span-2 hidden" id="chapitres-card">
-                <h2>📚 Le parcours de l'année</h2>
-                <div class="chapitres" id="chapitres"></div>
-            </div>
-
-            <div class="card span-2 hidden" id="comportement-card">
-                <h2>🚦 Feu du comportement</h2>
-                <div id="feu-zone"></div>
             </div>
 
             <div class="card">
@@ -83,9 +73,19 @@
                 <div id="defi-jour"></div>
             </div>
 
-            <div class="card span-2 hidden" id="defi-semaine-card">
+            <div class="card hidden" id="defi-semaine-card">
                 <h2>🧠 Défi de la semaine <span class="xp-tag" id="defi-semaine-xp-tag"></span></h2>
                 <div id="defi-semaine"></div>
+            </div>
+
+            <div class="card hidden" id="comportement-card">
+                <h2>🚦 Feu du comportement</h2>
+                <div id="feu-zone"></div>
+            </div>
+
+            <div class="card span-2 hidden" id="chapitres-card">
+                <h2>📚 Le parcours de l'année</h2>
+                <div class="chapitres" id="chapitres"></div>
             </div>
 
             <div class="card span-2" id="outils-card">
@@ -106,7 +106,7 @@
         </footer>
     </div>
 
-    <script src="config.js?v=2"></script>
-    <script src="app.js?v=2"></script>
+    <script src="config.js?v=3"></script>
+    <script src="app.js?v=3"></script>
 </body>
 </html>
