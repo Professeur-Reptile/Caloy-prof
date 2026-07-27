@@ -25,7 +25,9 @@ const CONFIG = {
     nuit: {
         debutHeure: 22,  // bloqué à partir de 22 h…
         finHeure: 6,     // …jusqu'à 6 h du matin
-        texte: "Les défis seront encore là demain — ton cerveau retient mieux les maths après une bonne nuit. 😴"
+        // Blocage désactivé (texte vide). Pour le réactiver, remettez :
+        // texte: "Les défis seront encore là demain — ton cerveau retient mieux les maths après une bonne nuit. 😴"
+        texte: ""
     },
 
     // ---- Vos classes ----------------------------------------------
