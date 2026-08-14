@@ -1,0 +1,116 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta name="description" content="L'espace maths de M. Caloy pour les 4e et 3e : annonces de ta classe, devoirs, compte à rebours des évals et défi de la semaine.">
+    <!-- Tant que le site est en construction, on demande aux moteurs de
+         recherche de ne PAS référencer cette page (elle ne remontera pas
+         dans Google). Supprimez cette ligne quand le site sera public. -->
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
+    <title>Maths avec M. Caloy 🚀</title>
+    <!-- Le « ?v=… » force les navigateurs à recharger les fichiers
+         après une mise à jour : pensez à changer le numéro quand vous
+         modifiez config.js, app.js ou style.css ! -->
+    <link rel="stylesheet" href="style.css?v=3">
+</head>
+<body>
+
+    <!-- Premier passage : choix de la classe -->
+    <div class="choose-overlay hidden" id="choose-overlay">
+        <div class="choose-box">
+            <h2>Salut ! 👋</h2>
+            <p>Tu es dans quelle classe ?</p>
+            <div id="choose-zones"></div>
+        </div>
+    </div>
+
+    <!-- Écran de nuit : bloque le site aux heures de dodo -->
+    <div class="dodo-overlay hidden" id="dodo-overlay">
+        <div class="dodo-box">
+            <div class="dodo-lune">🌙</div>
+            <h2>C'est l'heure de dormir !</h2>
+            <p id="dodo-texte"></p>
+            <p class="dodo-retour" id="dodo-retour"></p>
+        </div>
+    </div>
+
+    <div class="wrap">
+        <section class="hero">
+            <div class="hero-top">
+                <div>
+                    <h1>Salut <span class="grad" id="hero-classe"></span> ! 🚀</h1>
+                    <p class="sub">Ton espace maths avec M. Caloy — annonces, devoirs et défis.</p>
+                </div>
+                <div class="class-picker" id="class-picker" role="group" aria-label="Choix de la classe"></div>
+            </div>
+
+            <div class="xp-panel">
+                <div class="xp-level" id="xp-level">🐣 Débutant</div>
+                <div class="xp-bar"><div class="xp-bar-fill" id="xp-fill"></div></div>
+                <div class="xp-count"><span id="xp-value">0</span> XP de la classe<span id="xp-pop-zone"></span></div>
+                <div class="streak" id="streak">🔥 0 jour</div>
+            </div>
+
+            <div class="now-banner hidden" id="now-banner"></div>
+        </section>
+
+        <div class="grid">
+            <div class="card">
+                <h2>📢 Quoi de neuf ?</h2>
+                <div id="annonces"></div>
+            </div>
+
+            <div class="card">
+                <h2>📝 Pour la prochaine fois</h2>
+                <div id="devoirs"></div>
+            </div>
+
+            <div class="card">
+                <h2>⏳ Prochaine éval</h2>
+                <div class="countdown" id="countdown"></div>
+            </div>
+
+            <div class="card hidden" id="defi-jour-card">
+                <h2>🗓️ Défi du jour <span class="xp-tag" id="defi-jour-xp-tag"></span></h2>
+                <div id="defi-jour"></div>
+            </div>
+
+            <div class="card hidden" id="defi-semaine-card">
+                <h2>🧠 Défi de la semaine <span class="xp-tag" id="defi-semaine-xp-tag"></span></h2>
+                <div id="defi-semaine"></div>
+            </div>
+
+            <div class="card hidden" id="comportement-card">
+                <h2>🚦 Feu du comportement</h2>
+                <div id="feu-zone"></div>
+            </div>
+
+            <div class="card span-2 hidden" id="chapitres-card">
+                <h2>📚 Le parcours de l'année</h2>
+                <div class="chapitres" id="chapitres"></div>
+            </div>
+
+            <div class="card span-2" id="outils-card">
+                <h2>🧰 Boîte à outils</h2>
+                <div class="shortcuts" id="outils"></div>
+            </div>
+
+            <div class="card span-2">
+                <h2>💬 Une question ?</h2>
+                <p class="contact-txt" id="contact-txt"></p>
+                <a class="btn hidden" id="contact-btn" href="#">✉️ Écrire à M. Caloy</a>
+            </div>
+        </div>
+
+        <footer>
+            <p>Maths avec M. Caloy</p>
+            <p id="visites"></p>
+        </footer>
+    </div>
+
+    <script src="config.js?v=4"></script>
+    <script src="app.js?v=4"></script>
+</body>
+</html>

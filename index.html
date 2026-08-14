@@ -3,110 +3,147 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <meta name="description" content="L'espace maths de M. Caloy pour les 4e et 3e : annonces de ta classe, devoirs, compte à rebours des évals et défi de la semaine.">
-    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚀</text></svg>">
-    <title>Maths avec M. Caloy 🚀</title>
-    <!-- Le « ?v=… » force les navigateurs à recharger les fichiers
-         après une mise à jour : pensez à changer le numéro quand vous
-         modifiez config.js, app.js ou style.css ! -->
-    <link rel="stylesheet" href="style.css?v=3">
+    <meta name="description" content="Le site de maths de M. Caloy est en cours de préparation. Il sera bientôt en ligne !">
+    <meta name="robots" content="noindex, nofollow">
+    <link rel="icon" href="data:image/svg+xml,<svg xmlns=%22http://www.w3.org/2000/svg%22 viewBox=%220 0 100 100%22><text y=%22.9em%22 font-size=%2290%22>🚧</text></svg>">
+    <title>Site en construction 🚧</title>
+
+    <script>
+    // ═══════════════════════════════════════════════════════════════
+    //  🚧  MODE CONSTRUCTION — le seul réglage à changer ici
+    //
+    //  true  → les élèves voient la page « site en construction ».
+    //          Le vrai site (site.html) n'est PAS affiché, et son
+    //          contenu n'est même pas chargé par le navigateur.
+    //
+    //  false → le site normal s'affiche pour tout le monde
+    //          (l'adresse du site redirige vers site.html).
+    //
+    //  ➜ Pour VOIR le site pendant les travaux, deux possibilités :
+    //     • ouvrir directement  …/site.html
+    //     • ou ajouter le code prof à l'adresse :  …/?prof=maths
+    //       (changez « maths » ci-dessous si vous voulez un autre code)
+    // ═══════════════════════════════════════════════════════════════
+    const EN_CONSTRUCTION = true;
+    const CODE_PROF = "maths";
+
+    (function () {
+        var params = new URLSearchParams(location.search);
+        if (!EN_CONSTRUCTION || params.get("prof") === CODE_PROF) {
+            location.replace("site.html");
+        }
+    })();
+    </script>
+
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+
+        :root {
+            --bg: #0b1020;
+            --card: #151b2e;
+            --border: rgba(255, 255, 255, 0.08);
+            --text: #e6eaf5;
+            --text-dim: #9aa5c4;
+            --violet: #8b5cf6;
+            --cyan: #22d3ee;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: var(--bg);
+            background-image:
+                radial-gradient(600px 300px at 15% -5%, rgba(139, 92, 246, 0.25), transparent 70%),
+                radial-gradient(600px 300px at 85% 0%, rgba(34, 211, 238, 0.18), transparent 70%);
+            background-repeat: no-repeat;
+            color: var(--text);
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .box {
+            background: var(--card);
+            border: 1px solid var(--border);
+            border-radius: 22px;
+            padding: 40px 30px;
+            max-width: 560px;
+            width: 100%;
+            text-align: center;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.45);
+        }
+
+        .panneau {
+            font-size: 4em;
+            line-height: 1;
+            display: inline-block;
+            animation: bricole 2.6s ease-in-out infinite;
+        }
+
+        @keyframes bricole {
+            0%, 100% { transform: rotate(-6deg); }
+            50%      { transform: rotate(6deg); }
+        }
+
+        h1 {
+            font-size: clamp(1.5em, 5vw, 2.1em);
+            font-weight: 800;
+            letter-spacing: -0.5px;
+            margin: 18px 0 12px;
+        }
+
+        h1 .grad {
+            background: linear-gradient(90deg, var(--violet), var(--cyan));
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
+        }
+
+        p {
+            color: var(--text-dim);
+            font-size: 1.05em;
+            line-height: 1.6;
+            margin-bottom: 12px;
+        }
+
+        p.signature {
+            color: var(--text);
+            font-weight: 600;
+            margin-top: 22px;
+            margin-bottom: 0;
+        }
+
+        .points span {
+            display: inline-block;
+            font-size: 1.6em;
+            color: var(--violet);
+            animation: saute 1.4s ease-in-out infinite;
+        }
+
+        .points span:nth-child(2) { animation-delay: 0.2s; color: var(--cyan); }
+        .points span:nth-child(3) { animation-delay: 0.4s; }
+
+        @keyframes saute {
+            0%, 60%, 100% { transform: translateY(0); opacity: 0.5; }
+            30%           { transform: translateY(-8px); opacity: 1; }
+        }
+
+        @media (prefers-reduced-motion: reduce) {
+            .panneau, .points span { animation: none; }
+        }
+    </style>
 </head>
 <body>
 
-    <!-- Premier passage : choix de la classe -->
-    <div class="choose-overlay hidden" id="choose-overlay">
-        <div class="choose-box">
-            <h2>Salut ! 👋</h2>
-            <p>Tu es dans quelle classe ?</p>
-            <div id="choose-zones"></div>
-        </div>
-    </div>
+    <main class="box">
+        <div class="panneau">🚧</div>
+        <h1>Le site est <span class="grad">en construction</span> !</h1>
+        <p>M. Caloy est en train de préparer votre espace maths : annonces, devoirs, défis…</p>
+        <p>Il sera en ligne très bientôt. Reviens faire un tour dans quelques jours ! 🚀</p>
+        <div class="points" aria-hidden="true"><span>•</span><span>•</span><span>•</span></div>
+        <p class="signature">En attendant, les infos importantes restent sur l'ENT / Pronote.</p>
+    </main>
 
-    <!-- Écran de nuit : bloque le site aux heures de dodo -->
-    <div class="dodo-overlay hidden" id="dodo-overlay">
-        <div class="dodo-box">
-            <div class="dodo-lune">🌙</div>
-            <h2>C'est l'heure de dormir !</h2>
-            <p id="dodo-texte"></p>
-            <p class="dodo-retour" id="dodo-retour"></p>
-        </div>
-    </div>
-
-    <div class="wrap">
-        <section class="hero">
-            <div class="hero-top">
-                <div>
-                    <h1>Salut <span class="grad" id="hero-classe"></span> ! 🚀</h1>
-                    <p class="sub">Ton espace maths avec M. Caloy — annonces, devoirs et défis.</p>
-                </div>
-                <div class="class-picker" id="class-picker" role="group" aria-label="Choix de la classe"></div>
-            </div>
-
-            <div class="xp-panel">
-                <div class="xp-level" id="xp-level">🐣 Débutant</div>
-                <div class="xp-bar"><div class="xp-bar-fill" id="xp-fill"></div></div>
-                <div class="xp-count"><span id="xp-value">0</span> XP de la classe<span id="xp-pop-zone"></span></div>
-                <div class="streak" id="streak">🔥 0 jour</div>
-            </div>
-
-            <div class="now-banner hidden" id="now-banner"></div>
-        </section>
-
-        <div class="grid">
-            <div class="card">
-                <h2>📢 Quoi de neuf ?</h2>
-                <div id="annonces"></div>
-            </div>
-
-            <div class="card">
-                <h2>📝 Pour la prochaine fois</h2>
-                <div id="devoirs"></div>
-            </div>
-
-            <div class="card">
-                <h2>⏳ Prochaine éval</h2>
-                <div class="countdown" id="countdown"></div>
-            </div>
-
-            <div class="card hidden" id="defi-jour-card">
-                <h2>🗓️ Défi du jour <span class="xp-tag" id="defi-jour-xp-tag"></span></h2>
-                <div id="defi-jour"></div>
-            </div>
-
-            <div class="card hidden" id="defi-semaine-card">
-                <h2>🧠 Défi de la semaine <span class="xp-tag" id="defi-semaine-xp-tag"></span></h2>
-                <div id="defi-semaine"></div>
-            </div>
-
-            <div class="card hidden" id="comportement-card">
-                <h2>🚦 Feu du comportement</h2>
-                <div id="feu-zone"></div>
-            </div>
-
-            <div class="card span-2 hidden" id="chapitres-card">
-                <h2>📚 Le parcours de l'année</h2>
-                <div class="chapitres" id="chapitres"></div>
-            </div>
-
-            <div class="card span-2" id="outils-card">
-                <h2>🧰 Boîte à outils</h2>
-                <div class="shortcuts" id="outils"></div>
-            </div>
-
-            <div class="card span-2">
-                <h2>💬 Une question ?</h2>
-                <p class="contact-txt" id="contact-txt"></p>
-                <a class="btn hidden" id="contact-btn" href="#">✉️ Écrire à M. Caloy</a>
-            </div>
-        </div>
-
-        <footer>
-            <p>Maths avec M. Caloy</p>
-            <p id="visites"></p>
-        </footer>
-    </div>
-
-    <script src="config.js?v=4"></script>
-    <script src="app.js?v=4"></script>
 </body>
 </html>
